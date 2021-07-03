@@ -1,4 +1,3 @@
-import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import {
@@ -115,13 +114,6 @@ export default function ModalForm() {
             />
           </Grid>
           <Divider/>
-
-          <Grid container justify="flex-end">
-            <Grid className="w-100 mt-5 d-flex justify-content-between align-items-center" item>
-              <Button color="primary">Cancel</Button>
-              <Button variant="contained" color="primary">Save</Button>
-            </Grid>
-          </Grid>
         </form>
       </div>
     </Container>

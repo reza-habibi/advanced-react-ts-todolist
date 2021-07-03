@@ -1,24 +1,26 @@
-import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
+import React from "react";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
 import { MdModeEdit } from "react-icons/md";
-import { useSpring, animated } from 'react-spring/dist/react-spring.cjs' // web.cjs is required for IE 11 support
-import ModalForm from './ModalForm/ModalForm';
+import { useSpring, animated } from "react-spring/dist/react-spring.cjs"; // web.cjs is required for IE 11 support
+import ModalForm from "./ModalForm/ModalForm";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     modal: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
     },
     paper: {
       backgroundColor: theme.palette.background.paper,
-      border: '2px solid #000',
+      border: "2px solid #000",
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
     },
-  }),
+  })
 );
 
 interface FadeProps {
@@ -28,7 +30,10 @@ interface FadeProps {
   onExited?: () => {};
 }
 
-const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, ref) {
+const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(
+  props,
+  ref
+) {
   const { in: open, children, onEnter, onExited, ...other } = props;
   const style = useSpring({
     from: { opacity: 0 },
@@ -67,7 +72,7 @@ export default function SpringModal() {
   return (
     <div>
       <div onClick={handleOpen}>
-          <MdModeEdit size={28} cursor={"pointer"}/>
+        <MdModeEdit size={28} cursor={"pointer"} />
       </div>
       <Modal
         aria-labelledby="spring-modal-title"
@@ -83,7 +88,20 @@ export default function SpringModal() {
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <ModalForm/>
+            <ModalForm />
+            <Grid container justify="flex-end">
+              <Grid
+                className="w-100 mt-5 d-flex justify-content-between align-items-center"
+                item
+              >
+                <Button color="primary" onClick={handleClose}>
+                  Cancel
+                </Button>
+                <Button variant="contained" color="primary">
+                  Save
+                </Button>
+              </Grid>
+            </Grid>
           </div>
         </Fade>
       </Modal>
