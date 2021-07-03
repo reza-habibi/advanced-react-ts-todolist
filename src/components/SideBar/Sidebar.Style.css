@@ -1,0 +1,11 @@
+.filters-section{
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.filters-section .MuiFormControl-root{
+    min-width:200px ;
+}
