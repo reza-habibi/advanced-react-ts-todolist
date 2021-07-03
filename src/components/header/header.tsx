@@ -5,7 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { InputAdornment } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import SwipeAbleTemporaryDrawer from "../SideBar/SideBar";
-
+import AddModal from '../AddModal/AddModal'
 
 import "./header.css";
 
@@ -37,7 +37,7 @@ const Header: React.FC = () => {
           }}
         />
         <SwipeAbleTemporaryDrawer />
-        <MdModeEdit className="icon"></MdModeEdit>
+        <AddModal/>
       </div>
     </header>
   );

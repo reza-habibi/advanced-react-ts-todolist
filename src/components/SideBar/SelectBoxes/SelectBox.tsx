@@ -53,7 +53,7 @@ function SelectBox() {
         </Select>
       </FormControl>
       <FormControl variant="outlined" className={classes.formControl}>
-        <InputLabel id="demo-simple-select-outlined-label">Priority</InputLabel>
+        <InputLabel id="demo-simple-select-outlined-label">DeadLine</InputLabel>
         <Select
           labelId="demo-simple-select-outlined-label"
           id="demo-simple-select-outlined"
