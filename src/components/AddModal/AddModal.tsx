@@ -1,7 +1,5 @@
 import React from "react";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import { MdModeEdit } from "react-icons/md";
@@ -57,6 +55,8 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(
   );
 });
 
+
+
 export default function SpringModal() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -88,20 +88,8 @@ export default function SpringModal() {
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <ModalForm />
-            <Grid container justify="flex-end">
-              <Grid
-                className="w-100 mt-5 d-flex justify-content-between align-items-center"
-                item
-              >
-                <Button color="primary" onClick={handleClose}>
-                  Cancel
-                </Button>
-                <Button variant="contained" color="primary">
-                  Save
-                </Button>
-              </Grid>
-            </Grid>
+            <ModalForm onClick={handleClose} />
+            
           </div>
         </Fade>
       </Modal>
