@@ -9,7 +9,7 @@ import AddModal from '../AddModal/AddModal'
 
 import "./header.css";
 
-const Header: React.FC = () => {
+const Header = (props:any) => {
   return (
     <header
       className="w-100 d-flex align-items-center text-light p-2"
@@ -37,7 +37,7 @@ const Header: React.FC = () => {
           }}
         />
         <SwipeAbleTemporaryDrawer />
-        <AddModal/>
+        <AddModal myTask={props.myTask} setMyTask={props.setMyTask}/>
       </div>
     </header>
   );

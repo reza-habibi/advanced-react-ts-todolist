@@ -14,9 +14,8 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { tasks } from "../../../Data/tasks";
 import "./ModalFrom.Style.css";
-
+import { TNewTask , TModal } from "../../../Types";
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -37,41 +36,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type TNewTask = {
-  task: string;
-  priority: string;
-  status: string;
-  deadline: string;
-  message: string;
-  id: number;
-};
 
-export default function ModalForm(props: { onClick: () => void }) {
+
+const ModalForm: React.FC<TModal> = (props) => {
   const classes = useStyles();
-  const [value, setValue] = useState("");
-  const [task, setTask] = useState(tasks);
   const [newTask, setNewTask] = useState<TNewTask>({
-    id: task.length+1,
+    id: props.myTask.length + 1,
     task: "",
-    priority: "",
-    status: "",
-    deadline: "",
+    priority: 0,
+    status: 0,
+    deadline: 0,
     message: "",
   });
+
   const getValue: any = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setNewTask({ ...newTask, [e.target.name]: e.target.value });
-    console.log(newTask);
   };
 
   const addTask = (e: React.MouseEvent) => {
     e.preventDefault();
-    task.push(newTask);
-    setTask(task);
-    console.log(tasks);
+    props.myTask.push(newTask);
+    props.setMyTask(props.myTask);
     props.onClick();
   };
+
 
   return (
     <Container className="modal-form" component="main" maxWidth="xs">
@@ -107,11 +97,12 @@ export default function ModalForm(props: { onClick: () => void }) {
                   id="demo-simple-select-outlined"
                   label="Priority"
                   name="priority"
+                  defaultValue={""}
                   required
                 >
-                  <MenuItem value={"Low"}>Low</MenuItem>
-                  <MenuItem value={"Medium"}>Medium</MenuItem>
-                  <MenuItem value={"High"}>High</MenuItem>
+                  <MenuItem value={0}>Low</MenuItem>
+                  <MenuItem value={1}>Medium</MenuItem>
+                  <MenuItem value={2}>High</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -126,25 +117,17 @@ export default function ModalForm(props: { onClick: () => void }) {
                   id="demo-simple-select-outlined"
                   label="Status"
                   name="status"
+                  defaultValue={""}
                   required
                 >
-                  <MenuItem value={"Todo"}>Todo</MenuItem>
-                  <MenuItem value={"Doing"}>Doing</MenuItem>
-                  <MenuItem value={"Done"}>Done</MenuItem>
+                  <MenuItem value={0}>Todo</MenuItem>
+                  <MenuItem value={1}>Doing</MenuItem>
+                  <MenuItem value={2}>Done</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
-                onChange={getValue}
-                variant="outlined"
-                required
-                fullWidth
-                id="deadline"
-                label="deadline"
-                name="deadline"
-                autoComplete="deadline"
-              />
+
             </Grid>
           </Grid>
           <Grid item xs={12}>
@@ -175,4 +158,6 @@ export default function ModalForm(props: { onClick: () => void }) {
       </div>
     </Container>
   );
-}
+};
+
+export default ModalForm;

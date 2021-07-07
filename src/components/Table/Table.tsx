@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEventHandler } from "react";
+import { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Table,
@@ -10,27 +10,88 @@ import {
   Paper,
   Chip,
 } from "@material-ui/core";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-import { tasks } from "../../Data/tasks";
+import {
+  MdKeyboardArrowLeft,
+  MdKeyboardArrowUp,
+  MdKeyboardArrowDown,
+} from "react-icons/md";
+import { Edit, Delete, Visibility } from "@material-ui/icons";
+import { TListSort } from "../../Types";
+import tasks from "../../Data/tasks";
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
 });
 
-export default function BasicTable() {
+export default function BasicTable(props: any) {
   const classes = useStyles();
-  const [task, setTask] = useState(tasks);
 
   useEffect(() => {
-    let newTask = [...task];
-    setTask(newTask);
-  }, [tasks]);
+    props.setMyTask(props.myTask);
+    console.log(tasks);
+  }, [props.myTask]);
+
+  console.log(props.myTask);
+
+  
+  const [todoData, setTodoData] = useState([...props.myTask]);
+
+  const [listSort, setListSort] = useState<TListSort>({
+    priority: 0,
+    status: 0,
+    deadline: 0,
+  });
+
+  function sortChangeButton(sort: string) {
+    sort === "priority" &&
+      (listSort.priority < 2
+        ? setListSort({
+            priority: listSort.priority + 1,
+            status: 0,
+            deadline: 0,
+          })
+        : setListSort({ priority: 0, status: 0, deadline: 0 }));
+
+    sort === "status" &&
+      (listSort.status < 2
+        ? setListSort({ priority: 0, status: listSort.status + 1, deadline: 0 })
+        : setListSort({ priority: 0, status: 0, deadline: 0 }));
+
+    sort === "deadline" &&
+      (listSort.deadline < 2
+        ? setListSort({
+            priority: 0,
+            status: 0,
+            deadline: listSort.deadline + 1,
+          })
+        : setListSort({ priority: 0, status: 0, deadline: 0 }));
+  }
+
+  useEffect(() => {
+    setTodoData([...props.myTask]);
+    listSort.status === 1 &&
+      setTodoData([...todoData.sort((a, b) => a.status - b.status)]);
+    listSort.status === 2 &&
+      setTodoData([...todoData.sort((a, b) => b.status - a.status)]);
+
+    listSort.priority === 1 &&
+      setTodoData([...todoData.sort((a, b) => a.priority - b.priority)]);
+    listSort.priority === 2 &&
+      setTodoData([...todoData.sort((a, b) => b.priority - a.priority)]);
+
+    listSort.deadline === 1 &&
+      setTodoData([
+        ...todoData.sort((a, b) => a.deadline.getTime() - b.deadline.getTime()),
+      ]);
+    listSort.deadline === 2 &&
+      setTodoData([
+        ...todoData.sort((a, b) => b.deadline.getTime() - a.deadline.getTime()),
+      ]);
+  }, [listSort]);
 
   function handleRemove(index: number) {
-    setTask(task.filter((item) => item.id !== index));
+    setTodoData(todoData.filter((item: any) => item.id !== index));
     console.log(index);
   }
 
@@ -44,14 +105,53 @@ export default function BasicTable() {
             >
               Task
             </TableCell>
-            <TableCell align="center">Priority</TableCell>
-            <TableCell align="center">Status</TableCell>
-            <TableCell align="center">Deadline</TableCell>
+            <TableCell
+              style={{ cursor: "pointer" }}
+              align="center"
+              onClick={() => sortChangeButton("priority")}
+            >
+              Priority
+              {listSort.priority === 0 ? (
+                <MdKeyboardArrowLeft size={24} />
+              ) : listSort.priority === 1 ? (
+                <MdKeyboardArrowDown size={24} />
+              ) : (
+                <MdKeyboardArrowUp size={24} />
+              )}
+            </TableCell>
+            <TableCell
+              style={{ cursor: "pointer" }}
+              align="center"
+              onClick={() => sortChangeButton("status")}
+            >
+              Status
+              {listSort.status === 0 ? (
+                <MdKeyboardArrowLeft size={24} />
+              ) : listSort.status === 1 ? (
+                <MdKeyboardArrowDown size={24} />
+              ) : (
+                <MdKeyboardArrowUp size={24} />
+              )}
+            </TableCell>
+            <TableCell
+              style={{ cursor: "pointer" }}
+              align="center"
+              onClick={() => sortChangeButton("deadline")}
+            >
+              Deadline
+              {listSort.deadline === 0 ? (
+                <MdKeyboardArrowLeft size={24} />
+              ) : listSort.deadline === 1 ? (
+                <MdKeyboardArrowDown size={24} />
+              ) : (
+                <MdKeyboardArrowUp size={24} />
+              )}
+            </TableCell>
             <TableCell align="center">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {task.map((item, index) => {
+          {todoData.map((item: any, index: number) => {
             return (
               <TableRow key={index}>
                 <TableCell
@@ -65,11 +165,17 @@ export default function BasicTable() {
                 </TableCell>
                 <TableCell align="center">
                   <Chip
-                    label={item.priority}
+                    label={
+                      item.priority === 2
+                        ? "High"
+                        : item.priority === 1
+                        ? "Medium"
+                        : "Low"
+                    }
                     color={
-                      item.priority.match("High")
+                      item.priority === 2
                         ? "secondary"
-                        : item.priority.match("Medium")
+                        : item.priority === 1
                         ? "primary"
                         : "default"
                     }
@@ -77,11 +183,17 @@ export default function BasicTable() {
                 </TableCell>
                 <TableCell align="center">
                   <Chip
-                    label={item.status}
+                    label={
+                      item.status === 2
+                        ? "Done"
+                        : item.status === 1
+                        ? "Doing"
+                        : "Todo"
+                    }
                     color={
-                      item.status.match("Todo")
+                      item.status === 2
                         ? "secondary"
-                        : item.status.match("Doing")
+                        : item.status === 1
                         ? "primary"
                         : "default"
                     }
@@ -89,16 +201,23 @@ export default function BasicTable() {
                 </TableCell>
                 <TableCell align="center">
                   <Chip
-                    label={item.deadline}
-                    color="secondary"
+                    label={`${item.deadline.getFullYear()}/${
+                      item.deadline.getMonth() + 1
+                    }/${item.deadline.getDate()}`}
+                    color={
+                      item.deadline >=
+                      new Date(Date.now() + 1000 * 60 * 60 * 24)
+                        ? "primary"
+                        : "secondary"
+                    }
                     variant="outlined"
                   />
                 </TableCell>
                 <TableCell align="center">
                   <div className="icons w-50 d-flex justify-content-between align-items-center mx-auto">
-                    <VisibilityIcon />
-                    <EditIcon />
-                    <DeleteIcon
+                    <Visibility />
+                    <Edit />
+                    <Delete
                       onClick={() => handleRemove(item.id)}
                       style={{ cursor: "pointer" }}
                     />

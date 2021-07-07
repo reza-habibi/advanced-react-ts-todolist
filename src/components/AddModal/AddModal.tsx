@@ -57,7 +57,7 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(
 
 
 
-export default function SpringModal() {
+export default function SpringModal(props:any) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -88,7 +88,7 @@ export default function SpringModal() {
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <ModalForm onClick={handleClose} />
+            <ModalForm onClick={handleClose} myTask={props.myTask} setMyTask={props.setMyTask}/>
             
           </div>
         </Fade>
