@@ -3,7 +3,8 @@ import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import { MdModeEdit } from "react-icons/md";
-import { useSpring, animated } from "react-spring/dist/react-spring.cjs"; // web.cjs is required for IE 11 support
+import { useSpring, animated } from "react-spring/dist/react-spring.cjs";
+
 import ModalForm from "./ModalForm/ModalForm";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,9 +58,8 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(
 
 
 
-export default function SpringModal(props:any) {
+const SpringModal=({myTask,setMyTask,open,setOpen,value,setValue,setViewMode,setEditMode,viewMode,editMode}:any)=> {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -67,6 +67,9 @@ export default function SpringModal(props:any) {
 
   const handleClose = () => {
     setOpen(false);
+    setViewMode(false);
+    setValue('')
+
   };
 
   return (
@@ -88,7 +91,16 @@ export default function SpringModal(props:any) {
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <ModalForm onClick={handleClose} myTask={props.myTask} setMyTask={props.setMyTask}/>
+            <ModalForm 
+              onClick={handleClose} 
+                myTask={myTask} 
+                  setMyTask={setMyTask} 
+                    value={value}
+                      setValue={setValue}
+                        viewMode={viewMode} 
+                          setViewMode={setViewMode}
+                            editMode={editMode}
+                              setEditMode={setEditMode}/>
             
           </div>
         </Fade>
@@ -96,3 +108,6 @@ export default function SpringModal(props:any) {
     </div>
   );
 }
+
+
+export default SpringModal

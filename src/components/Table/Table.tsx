@@ -17,7 +17,6 @@ import {
 } from "react-icons/md";
 import { Edit, Delete, Visibility } from "@material-ui/icons";
 import { TListSort } from "../../Types";
-import tasks from "../../Data/tasks";
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -28,13 +27,10 @@ export default function BasicTable(props: any) {
   const classes = useStyles();
 
   useEffect(() => {
-    props.setMyTask(props.myTask);
-    console.log(tasks);
+    setTodoData(props.myTask);
   }, [props.myTask]);
 
-  console.log(props.myTask);
 
-  
   const [todoData, setTodoData] = useState([...props.myTask]);
 
   const [listSort, setListSort] = useState<TListSort>({
@@ -82,17 +78,28 @@ export default function BasicTable(props: any) {
 
     listSort.deadline === 1 &&
       setTodoData([
-        ...todoData.sort((a, b) => a.deadline.getTime() - b.deadline.getTime()),
+        ...todoData.sort((a, b) => a.deadline.unix - b.deadline.unix),
       ]);
     listSort.deadline === 2 &&
       setTodoData([
-        ...todoData.sort((a, b) => b.deadline.getTime() - a.deadline.getTime()),
+        ...todoData.sort((a, b) => b.deadline.unix - a.deadline.unix),
       ]);
-  }, [listSort]);
+  }, [listSort, props.myTask]);
 
   function handleRemove(index: number) {
-    setTodoData(todoData.filter((item: any) => item.id !== index));
-    console.log(index);
+    props.setMyTask(todoData.filter((item: any) => item.id !== index));
+  }
+
+  function handleEdit(index:number){
+    props.setOpen(true);
+    props.setValue(props.myTask.find((item: { id: number; })=>item.id===index))
+    props.setEditMode(true)
+  }
+
+  function handleView(index:number){
+    props.setOpen(true);
+    props.setValue(props.myTask.find((item: { id: number; })=>item.id===index))
+    props.setViewMode(true);
   }
 
   return (
@@ -151,7 +158,7 @@ export default function BasicTable(props: any) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {todoData.map((item: any, index: number) => {
+          {todoData.filter(item => item.task.toLowerCase().includes(props.filter.toLowerCase()) ).map((item, index) => {
             return (
               <TableRow key={index}>
                 <TableCell
@@ -201,9 +208,11 @@ export default function BasicTable(props: any) {
                 </TableCell>
                 <TableCell align="center">
                   <Chip
-                    label={`${item.deadline.getFullYear()}/${
-                      item.deadline.getMonth() + 1
-                    }/${item.deadline.getDate()}`}
+                    label={
+                      item.deadline
+                        ? `${item.deadline.year}/${item.deadline.month}/${item.deadline.day}`
+                        : null
+                    }
                     color={
                       item.deadline >=
                       new Date(Date.now() + 1000 * 60 * 60 * 24)
@@ -215,8 +224,8 @@ export default function BasicTable(props: any) {
                 </TableCell>
                 <TableCell align="center">
                   <div className="icons w-50 d-flex justify-content-between align-items-center mx-auto">
-                    <Visibility />
-                    <Edit />
+                    <Visibility onClick={() => handleView(item.id)}/>
+                    <Edit onClick={() => handleEdit(item.id)}/>
                     <Delete
                       onClick={() => handleRemove(item.id)}
                       style={{ cursor: "pointer" }}
@@ -230,7 +239,4 @@ export default function BasicTable(props: any) {
       </Table>
     </TableContainer>
   );
-}
-function e(e: any): void {
-  throw new Error("Function not implemented.");
 }

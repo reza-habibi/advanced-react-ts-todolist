@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent} from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -17,17 +17,26 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function SelectBox() {
+function SelectBox(props:any) {
+
+
   const classes = useStyles();
+  
+  const handleChange:any=(e:ChangeEvent<HTMLSelectElement>)=>{
+      props.setFilteredData(e.target.value)
+      console.log(props.filteredData)
+  }
 
   return (
     <>
       <FormControl variant="outlined" className={classes.formControl}>
         <InputLabel id="demo-simple-select-outlined-label">Priority</InputLabel>
         <Select
+          onChange={handleChange}
           labelId="demo-simple-select-outlined-label"
           id="demo-simple-select-outlined"
-          label="Age"
+          label="priority"
+          name="priority"
         >
           <MenuItem value="All">
             All
@@ -40,9 +49,12 @@ function SelectBox() {
       <FormControl variant="outlined" className={classes.formControl}>
         <InputLabel id="demo-simple-select-outlined-label">Status</InputLabel>
         <Select
+          onChange={handleChange}
           labelId="demo-simple-select-outlined-label"
           id="demo-simple-select-outlined"
-          label="Age"
+          label="status"
+          name="status"
+          defaultValue={"All"}
         >
           <MenuItem value="All">
             All
@@ -55,9 +67,12 @@ function SelectBox() {
       <FormControl variant="outlined" className={classes.formControl}>
         <InputLabel id="demo-simple-select-outlined-label">DeadLine</InputLabel>
         <Select
+          onChange={handleChange}
           labelId="demo-simple-select-outlined-label"
           id="demo-simple-select-outlined"
-          label="Age"
+          label="deadline"
+          name="deadline"
+          defaultValue={"All"}
         >
           <MenuItem value="All">
             All

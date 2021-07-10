@@ -11,11 +11,14 @@ import {
   Divider,
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
+import DatePicker from "react-multi-date-picker";
+import type { Value } from "react-multi-date-picker";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import "./ModalFrom.Style.css";
-import { TNewTask , TModal } from "../../../Types";
+import { TNewTask } from "../../../Types";
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -36,17 +39,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
-const ModalForm: React.FC<TModal> = (props) => {
+const ModalForm = (props: any) => {
+  const [value, setValue] = useState<Value>(new Date());
   const classes = useStyles();
   const [newTask, setNewTask] = useState<TNewTask>({
-    id: props.myTask.length + 1,
-    task: "",
-    priority: 0,
-    status: 0,
-    deadline: 0,
-    message: "",
+    id: props.editMode?props.value.id:props.myTask.length + 1,
+    task: props.editMode?props.value.task:"",
+    priority: props.editMode?props.value.priority:0,
+    status: props.editMode?props.value.status:0,
+    deadline: props.editMode?props.value.deadLine:0,
+    message: props.editMode?props.value.message:"",
+    unix: props.editMode?props.value.unix:0
   });
 
   const getValue: any = (
@@ -57,9 +60,28 @@ const ModalForm: React.FC<TModal> = (props) => {
 
   const addTask = (e: React.MouseEvent) => {
     e.preventDefault();
-    props.myTask.push(newTask);
-    props.setMyTask(props.myTask);
-    props.onClick();
+
+    if (props.editMode) {
+      setValue(value)
+      let oldTasks = props.myTask;
+      oldTasks = oldTasks.filter((item: { id: number; })=>item.id!==props.value.id)
+      let editTask = newTask;
+      oldTasks.push(editTask);
+      console.log(oldTasks)
+      props.setMyTask(oldTasks)
+      props.onClick();
+      props.setEditMode(false)
+      props.setValue('')
+
+    } else {
+      newTask.deadline = value;
+      props.setMyTask([...props.myTask, newTask]);
+      props.onClick();
+      props.setEditMode(false);
+
+    }
+
+
   };
 
 
@@ -78,11 +100,14 @@ const ModalForm: React.FC<TModal> = (props) => {
                 autoComplete="task"
                 name="task"
                 variant="outlined"
+                defaultValue={props.value.task ? props.value.task:""}
                 required
                 fullWidth
                 id="task"
                 label="New Task"
                 autoFocus
+                disabled={props.viewMode ? true : false}
+
               />
             </Grid>
 
@@ -97,7 +122,8 @@ const ModalForm: React.FC<TModal> = (props) => {
                   id="demo-simple-select-outlined"
                   label="Priority"
                   name="priority"
-                  defaultValue={""}
+                  defaultValue={props.value.priority}
+                  disabled={props.viewMode ? true : false}
                   required
                 >
                   <MenuItem value={0}>Low</MenuItem>
@@ -117,8 +143,9 @@ const ModalForm: React.FC<TModal> = (props) => {
                   id="demo-simple-select-outlined"
                   label="Status"
                   name="status"
-                  defaultValue={""}
                   required
+                  disabled={props.viewMode ? true : false}
+                  defaultValue={props.value.status}
                 >
                   <MenuItem value={0}>Todo</MenuItem>
                   <MenuItem value={1}>Doing</MenuItem>
@@ -127,7 +154,13 @@ const ModalForm: React.FC<TModal> = (props) => {
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={4}>
-
+              <DatePicker
+                value={props.value.deadline}
+                onChange={setValue}
+                locale="fa"
+                calendar="persian"
+                disabled={props.viewMode ? true : false}
+              />
             </Grid>
           </Grid>
           <Grid item xs={12}>
@@ -136,6 +169,7 @@ const ModalForm: React.FC<TModal> = (props) => {
               className="w-100 my-3 p-3"
               aria-label="Your Message"
               rowsMin={3}
+              defaultValue={props.value.message}
               placeholder="Your Message"
               name="message"
             />
@@ -147,11 +181,13 @@ const ModalForm: React.FC<TModal> = (props) => {
               item
             >
               <Button color="primary" onClick={props.onClick}>
-                Cancel
+                {props.viewMode ? 'Close' : 'Cancel'}
               </Button>
-              <Button onClick={addTask} variant="contained" color="primary">
-                Save
-              </Button>
+              {
+                props.viewMode ? null : <Button onClick={addTask} variant="contained" color="primary">
+                  {props.editMode ? 'Edit' : 'Save'}
+                </Button>
+              }
             </Grid>
           </Grid>
         </form>

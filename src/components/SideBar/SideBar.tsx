@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 
 type Anchor = "right";
 
-const SwipeAbleTemporaryDrawer = () => {
+const SwipeAbleTemporaryDrawer = (props:any) => {
   const classes = useStyles();
   const [state, setState] = React.useState({
     right: false,
@@ -67,7 +67,7 @@ const SwipeAbleTemporaryDrawer = () => {
 
       <Divider />
       <div className="filters-section mt-4">
-        <SelectBox />
+        <SelectBox myTask={props.myTask} setMyTask={props.setMyTask} filteredData={props.filteredData} setFilteredData={props.setFilteredData}/>
       </div>
     </div>
   );

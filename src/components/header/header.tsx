@@ -5,11 +5,14 @@ import IconButton from "@material-ui/core/IconButton";
 import { InputAdornment } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import SwipeAbleTemporaryDrawer from "../SideBar/SideBar";
-import AddModal from '../AddModal/AddModal'
-
+import AddModal from "../AddModal/AddModal";
 import "./header.css";
 
-const Header = (props:any) => {
+const Header = (props: any) => {
+  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    props.setFilter(e.currentTarget.value)
+}
+
   return (
     <header
       className="w-100 d-flex align-items-center text-light p-2"
@@ -23,6 +26,7 @@ const Header = (props:any) => {
       </div>
       <div className="w-25 d-flex justify-content-around align-items-center">
         <TextField
+          onChange={handleChange}
           id="standard-basic"
           label="Search"
           variant="outlined"
@@ -36,8 +40,22 @@ const Header = (props:any) => {
             ),
           }}
         />
-        <SwipeAbleTemporaryDrawer />
-        <AddModal myTask={props.myTask} setMyTask={props.setMyTask}/>
+        <SwipeAbleTemporaryDrawer
+         myTask={props.myTask}
+          setMyTask={props.setMyTask}
+           filteredData={props.filteredData}
+            setFilteredData={props.setFilteredData}/>
+        <AddModal
+         myTask={props.myTask}
+          setMyTask={props.setMyTask}
+           open={props.open}
+            setOpen={props.setOpen}
+             value={props.value}
+              setValue={props.setValue}
+               viewMode={props.viewMode} 
+                setViewMode={props.setViewMode}
+                 editMode={props.editMode}
+                  setEditMode={props.setEditMode}/>
       </div>
     </header>
   );
