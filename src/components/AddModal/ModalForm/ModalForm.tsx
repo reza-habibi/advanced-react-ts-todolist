@@ -62,10 +62,10 @@ const ModalForm = (props: any) => {
     e.preventDefault();
 
     if (props.editMode) {
-      setValue(value)
       let oldTasks = props.myTask;
       oldTasks = oldTasks.filter((item: { id: number; })=>item.id!==props.value.id)
       let editTask = newTask;
+      editTask.deadline = value;
       oldTasks.push(editTask);
       console.log(oldTasks)
       props.setMyTask(oldTasks)
@@ -172,6 +172,8 @@ const ModalForm = (props: any) => {
               defaultValue={props.value.message}
               placeholder="Your Message"
               name="message"
+              disabled={props.viewMode ? true : false}
+
             />
           </Grid>
           <Divider />
