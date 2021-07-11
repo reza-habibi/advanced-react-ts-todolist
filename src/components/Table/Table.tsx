@@ -37,7 +37,7 @@ export default function BasicTable(props: any) {
   const [pageCounts, setPageCounts] = useState<number>(1);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
-  function sortChangeButton(sort: string) {
+  function changeSortButton(sort: string) {
     sort === "priority" &&
       (sortedList.priority < 2
         ? setSortedList({
@@ -250,7 +250,7 @@ export default function BasicTable(props: any) {
             <TableCell
               style={{ cursor: "pointer" }}
               align="center"
-              onClick={() => sortChangeButton("priority")}
+              onClick={() => changeSortButton("priority")}
             >
               Priority
               {sortedList.priority === 0 ? (
@@ -264,7 +264,7 @@ export default function BasicTable(props: any) {
             <TableCell
               style={{ cursor: "pointer" }}
               align="center"
-              onClick={() => sortChangeButton("status")}
+              onClick={() => changeSortButton("status")}
             >
               Status
               {sortedList.status === 0 ? (
@@ -278,7 +278,7 @@ export default function BasicTable(props: any) {
             <TableCell
               style={{ cursor: "pointer" }}
               align="center"
-              onClick={() => sortChangeButton("deadline")}
+              onClick={() => changeSortButton("deadline")}
             >
               Deadline
               {sortedList.deadline === 0 ? (
