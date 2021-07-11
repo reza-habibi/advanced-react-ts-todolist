@@ -11,7 +11,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import DatePicker from "react-multi-date-picker";
+import DatePicker , { DateObject } from "react-multi-date-picker";
 import type { Value } from "react-multi-date-picker";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ModalForm = (props: any) => {
-  const [value, setValue] = useState<Value>(new Date());
+  const [value, setValue] = useState<Value>(new DateObject({ calendar: "persian" }));
   const classes = useStyles();
   const [newTask, setNewTask] = useState<TNewTask>({
     id: props.editMode ? props.value.id : props.myTask.length + 1,
