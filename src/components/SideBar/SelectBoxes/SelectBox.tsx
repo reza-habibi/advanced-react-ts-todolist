@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useEffect } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -19,16 +19,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function SelectBox(props: any) {
-  console.log(props.myTask);
   const classes = useStyles();
 
   useEffect(() => {
     props.setFilters(props.filters);
-  }, [props.filters]);
+  }, [props, props.filters.priority, props.filters.status, props.filters.deadline]);
 
   const handleChange: any = (e: ChangeEvent<HTMLSelectElement>) => {
     props.setFilters({ ...props.filters, [e.target.name]: e.target.value });
-    console.log(props.filters);
   };
 
   return (

@@ -71,7 +71,6 @@ const ModalForm = (props: any) => {
         editTask.deadline = value
       }
       oldTasks.push(editTask);
-      console.log(oldTasks);
       props.setMyTask(oldTasks);
       props.onClick();
       props.setValue("");

@@ -45,8 +45,8 @@ const SwipeAbleTemporaryDrawer = (props:any) => {
     <div
       className={clsx(classes.list)}
       role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
+      // onClick={toggleDrawer(anchor, false)}
+      // onKeyDown={toggleDrawer(anchor, false)}
     >
       <div className="sideBar-header d-flex justify-content-center align-items-center">
         <FiFilter

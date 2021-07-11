@@ -10,9 +10,8 @@ import {
   Paper,
 } from "@material-ui/core";
 import { Form } from "react-bootstrap";
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import { FaArrowDown, FaArrowUp } from "react-icons/fa";
-import TableBodyRow from "./TableBodyRow/TableBodyRow";
+import { MdKeyboardArrowLeft, MdKeyboardArrowUp , MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
+import TableBodyRow from "./TableBodyRow/TableBodyRow"; 
 import { TSortedList } from "../../Types";
 const useStyles = makeStyles({
   table: {
@@ -27,8 +26,8 @@ export default function BasicTable(props: any) {
     setTaskData(props.myTask);
   }, [props.myTask]);
 
+  const [copyTask] = useState(props.myTask)
   const [taskData, setTaskData] = useState([...props.myTask]);
-
   const [sortedList, setSortedList] = useState<TSortedList>({
     priority: 0,
     status: 0,
@@ -110,7 +109,6 @@ export default function BasicTable(props: any) {
   }
 
   function paginationChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    console.log(parseFloat(e.target.value));
     setPaginationValue(parseFloat(e.target.value));
   }
 
@@ -130,22 +128,21 @@ export default function BasicTable(props: any) {
   };
 
   useEffect(() => {
-    setTaskData([...props.myTask])
-  }, [props.filters])
+    setTaskData([...props.myTask]);
 
-  useEffect(() => {
-    if(props.filters.priority !== 0 &&
+    if (
+      props.filters.priority === 0 &&
       props.filters.status === 0 &&
-      props.filters.deadline === 0){
-        setTaskData(taskData)
-    }
-    else if (
+      props.filters.deadline === 0
+    ) {
+      setTaskData([...props.myTask]);
+    } else if (
       props.filters.priority !== 0 &&
       props.filters.status === 0 &&
       props.filters.deadline === 0
     ) {
       setTaskData(
-        taskData.filter(
+        copyTask.filter(
           (item: { priority: number }) =>
             item.priority === props.filters.priority
         )
@@ -156,7 +153,7 @@ export default function BasicTable(props: any) {
       props.filters.deadline === 0
     ) {
       setTaskData(
-        taskData.filter(
+        copyTask.filter(
           (item: { status: number }) => item.status === props.filters.status
         )
       );
@@ -172,10 +169,10 @@ export default function BasicTable(props: any) {
       props.filters.deadline === 0
     ) {
       setTaskData(
-        taskData
+        copyTask
           .filter(
             (item: { priority: number }) =>
-              item.priority !== props.filters.priority
+              item.priority === props.filters.priority
           )
           .filter(
             (item: { status: number }) => item.status === props.filters.status
@@ -211,7 +208,7 @@ export default function BasicTable(props: any) {
         filteredByDeadline()
           .filter(
             (item: { priority: number }) =>
-              item.priority !== props.filters.priority
+              item.priority === props.filters.priority
           )
           .filter(
             (item: { status: number }) => item.status === props.filters.status
@@ -222,21 +219,18 @@ export default function BasicTable(props: any) {
 
   const filteredByDeadline: any = () => {
     if (props.filters.deadline === 1) {
-      console.log("overdue");
-      return taskData.filter(
+      return copyTask.filter(
         (item: { deadline: any }) =>
           item.deadline < new Date(Date.now() + 1000 * 60 * 60 * 24)
       );
     } else if (props.filters.deadline === 2) {
-      console.log("for today");
 
-      return taskData.filter(
+      return copyTask.filter(
         (item: { deadline: any }) =>
           item.deadline === new Date(Date.now() + 1000 * 60 * 60 * 24)
       );
     } else if (props.filters.deadline === 3) {
-      console.log("for Future");
-      return taskData.filter(
+      return copyTask.filter(
         (item: { deadline: any }) =>
           item.deadline > new Date(Date.now() + 1000 * 60 * 60 * 24)
       );
@@ -262,9 +256,9 @@ export default function BasicTable(props: any) {
               {sortedList.priority === 0 ? (
                 <MdKeyboardArrowLeft size={24} />
               ) : sortedList.priority === 1 ? (
-                <FaArrowDown size={20} />
+                <MdKeyboardArrowDown size={20} />
               ) : (
-                <FaArrowUp size={20} />
+                <MdKeyboardArrowUp size={20} />
               )}
             </TableCell>
             <TableCell
@@ -276,9 +270,9 @@ export default function BasicTable(props: any) {
               {sortedList.status === 0 ? (
                 <MdKeyboardArrowLeft size={20} />
               ) : sortedList.status === 1 ? (
-                <FaArrowDown size={20} />
+                <MdKeyboardArrowDown size={20} />
               ) : (
-                <FaArrowUp size={20} />
+                <MdKeyboardArrowUp size={20} />
               )}
             </TableCell>
             <TableCell
@@ -290,9 +284,9 @@ export default function BasicTable(props: any) {
               {sortedList.deadline === 0 ? (
                 <MdKeyboardArrowLeft size={20} />
               ) : sortedList.deadline === 1 ? (
-                <FaArrowDown size={20} />
+                <MdKeyboardArrowDown size={20} />
               ) : (
-                <FaArrowUp size={20} />
+                <MdKeyboardArrowUp size={20} />
               )}
             </TableCell>
             <TableCell align="center">Actions</TableCell>
