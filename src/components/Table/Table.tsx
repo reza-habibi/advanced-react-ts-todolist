@@ -125,7 +125,7 @@ export default function BasicTable(props: any) {
   };
   const pageNumberDown = () => {
     pageNumber > 1 && setPageNumber(pageNumber - 1);
-  };
+  }
 
   useEffect(() => {
     setTaskData([...props.myTask]);

@@ -27,7 +27,7 @@ function SelectBox(props: any) {
 
   const handleChange: any = (e: ChangeEvent<HTMLSelectElement>) => {
     props.setFilters({ ...props.filters, [e.target.name]: e.target.value });
-  };
+  }
 
   return (
     <>

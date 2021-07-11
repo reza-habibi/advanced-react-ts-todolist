@@ -67,8 +67,10 @@ const ModalForm = (props: any) => {
         (item: { id: number }) => item.id !== props.value.id
       );
       let editTask = newTask;
-      if(value === new Date()){editTask.deadline = props.value.deadline}else{
-        editTask.deadline = value
+      if (value === new Date()) {
+        editTask.deadline = props.value.deadline;
+      } else {
+        editTask.deadline = value;
       }
       oldTasks.push(editTask);
       props.setMyTask(oldTasks);

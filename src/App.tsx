@@ -59,6 +59,7 @@ const App=()=> {
           setEditMode={setEditMode}
           setFilters={setFilters}
           filters={filters}/>
+          
       </div>
     </div>
   );

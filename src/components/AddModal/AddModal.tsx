@@ -96,8 +96,8 @@ const SpringModal = ({
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
-        }}
-      >
+        }}>
+          
         <Fade in={open}>
           <div className={classes.paper}>
             <ModalForm

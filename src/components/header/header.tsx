@@ -57,7 +57,6 @@ const Header = (props: any) => {
           setViewMode={props.setViewMode}
           editMode={props.editMode}
           setEditMode={props.setEditMode}
-          
         />
       </div>
     </header>
