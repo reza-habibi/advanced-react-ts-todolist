@@ -43,13 +43,13 @@ const ModalForm = (props: any) => {
   const [value, setValue] = useState<Value>(new Date());
   const classes = useStyles();
   const [newTask, setNewTask] = useState<TNewTask>({
-    id: props.editMode?props.value.id:props.myTask.length + 1,
-    task: props.editMode?props.value.task:"",
-    priority: props.editMode?props.value.priority:0,
-    status: props.editMode?props.value.status:0,
-    deadline: props.editMode?props.value.deadLine:0,
-    message: props.editMode?props.value.message:"",
-    unix: props.editMode?props.value.unix:0
+    id: props.editMode ? props.value.id : props.myTask.length + 1,
+    task: props.editMode ? props.value.task : "",
+    priority: props.editMode ? props.value.priority : 0,
+    status: props.editMode ? props.value.status : 0,
+    deadline: props.editMode ? props.value.deadLine : 0,
+    message: props.editMode ? props.value.message : "",
+    unix: props.editMode ? props.value.unix : 0,
   });
 
   const getValue: any = (
@@ -63,27 +63,24 @@ const ModalForm = (props: any) => {
 
     if (props.editMode) {
       let oldTasks = props.myTask;
-      oldTasks = oldTasks.filter((item: { id: number; })=>item.id!==props.value.id)
+      oldTasks = oldTasks.filter(
+        (item: { id: number }) => item.id !== props.value.id
+      );
       let editTask = newTask;
-      editTask.deadline = value;
+      if(value === new Date()){editTask.deadline = props.value.deadline}else{
+        editTask.deadline = value
+      }
       oldTasks.push(editTask);
-      console.log(oldTasks)
-      props.setMyTask(oldTasks)
+      console.log(oldTasks);
+      props.setMyTask(oldTasks);
       props.onClick();
-      props.setEditMode(false)
-      props.setValue('')
-
+      props.setValue("");
     } else {
       newTask.deadline = value;
       props.setMyTask([...props.myTask, newTask]);
       props.onClick();
-      props.setEditMode(false);
-
     }
-
-
   };
-
 
   return (
     <Container className="modal-form" component="main" maxWidth="xs">
@@ -100,14 +97,13 @@ const ModalForm = (props: any) => {
                 autoComplete="task"
                 name="task"
                 variant="outlined"
-                defaultValue={props.value.task ? props.value.task:""}
+                defaultValue={props.value.task ? props.value.task : ""}
                 required
                 fullWidth
                 id="task"
                 label="New Task"
                 autoFocus
                 disabled={props.viewMode ? true : false}
-
               />
             </Grid>
 
@@ -126,9 +122,9 @@ const ModalForm = (props: any) => {
                   disabled={props.viewMode ? true : false}
                   required
                 >
-                  <MenuItem value={0}>Low</MenuItem>
-                  <MenuItem value={1}>Medium</MenuItem>
-                  <MenuItem value={2}>High</MenuItem>
+                  <MenuItem value={1}>Low</MenuItem>
+                  <MenuItem value={2}>Medium</MenuItem>
+                  <MenuItem value={3}>High</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -147,15 +143,15 @@ const ModalForm = (props: any) => {
                   disabled={props.viewMode ? true : false}
                   defaultValue={props.value.status}
                 >
-                  <MenuItem value={0}>Todo</MenuItem>
-                  <MenuItem value={1}>Doing</MenuItem>
-                  <MenuItem value={2}>Done</MenuItem>
+                  <MenuItem value={1}>Todo</MenuItem>
+                  <MenuItem value={2}>Doing</MenuItem>
+                  <MenuItem value={3}>Done</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={4}>
               <DatePicker
-                value={props.value.deadline}
+                value={props.editMode ? props.value.deadline : value}
                 onChange={setValue}
                 locale="fa"
                 calendar="persian"
@@ -173,7 +169,6 @@ const ModalForm = (props: any) => {
               placeholder="Your Message"
               name="message"
               disabled={props.viewMode ? true : false}
-
             />
           </Grid>
           <Divider />
@@ -183,13 +178,15 @@ const ModalForm = (props: any) => {
               item
             >
               <Button color="primary" onClick={props.onClick}>
-                {props.viewMode ? 'Close' : 'Cancel'}
+                {props.viewMode ? "Close" : "Cancel"}
               </Button>
-              {
-                props.viewMode ? null : <Button onClick={addTask} variant="contained" color="primary">
-                  {props.editMode ? 'Edit' : 'Save'}
-                </Button>
-              }
+              {props.open === true ? (
+                props.viewMode ? null : (
+                  <Button onClick={addTask} variant="contained" color="primary">
+                    {props.editMode ? "Edit" : "Save"}
+                  </Button>
+                )
+              ) : null}
             </Grid>
           </Grid>
         </form>

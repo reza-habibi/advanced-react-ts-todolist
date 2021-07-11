@@ -56,9 +56,18 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(
   );
 });
 
-
-
-const SpringModal=({myTask,setMyTask,open,setOpen,value,setValue,setViewMode,setEditMode,viewMode,editMode}:any)=> {
+const SpringModal = ({
+  myTask,
+  setMyTask,
+  open,
+  setOpen,
+  value,
+  setValue,
+  setViewMode,
+  setEditMode,
+  viewMode,
+  editMode,
+}: any) => {
   const classes = useStyles();
 
   const handleOpen = () => {
@@ -67,9 +76,9 @@ const SpringModal=({myTask,setMyTask,open,setOpen,value,setValue,setViewMode,set
 
   const handleClose = () => {
     setOpen(false);
+    setEditMode(false);
     setViewMode(false);
-    setValue('')
-
+    setValue("");
   };
 
   return (
@@ -91,23 +100,23 @@ const SpringModal=({myTask,setMyTask,open,setOpen,value,setValue,setViewMode,set
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <ModalForm 
-              onClick={handleClose} 
-                myTask={myTask} 
-                  setMyTask={setMyTask} 
-                    value={value}
-                      setValue={setValue}
-                        viewMode={viewMode} 
-                          setViewMode={setViewMode}
-                            editMode={editMode}
-                              setEditMode={setEditMode}/>
-            
+            <ModalForm
+              onClick={handleClose}
+              myTask={myTask}
+              setMyTask={setMyTask}
+              value={value}
+              setValue={setValue}
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+              editMode={editMode}
+              setEditMode={setEditMode}
+              open={open}
+            />
           </div>
         </Fade>
       </Modal>
     </div>
   );
-}
+};
 
-
-export default SpringModal
+export default SpringModal;

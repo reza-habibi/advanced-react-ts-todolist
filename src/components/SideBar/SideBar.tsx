@@ -67,7 +67,8 @@ const SwipeAbleTemporaryDrawer = (props:any) => {
 
       <Divider />
       <div className="filters-section mt-4">
-        <SelectBox myTask={props.myTask} setMyTask={props.setMyTask} filteredData={props.filteredData} setFilteredData={props.setFilteredData}/>
+        <SelectBox myTask={props.myTask} setMyTask={props.setMyTask} setFilters={props.setFilters}
+          filters={props.filters}/>
       </div>
     </div>
   );

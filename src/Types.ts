@@ -24,14 +24,14 @@ export type TModal = {
   setMyTask: any;
 };
 
-export type TListSort = {
+export type TSortedList = {
   priority: number;
   status: number;
   deadline: number;
 };
 
 export type TFilters={
-  priority:string|number;
-  status:string|number;
-  deadline:string
+  priority:number;
+  status:number;
+  deadline:number;
 }

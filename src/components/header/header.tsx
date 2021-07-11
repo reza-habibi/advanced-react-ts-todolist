@@ -9,9 +9,9 @@ import AddModal from "../AddModal/AddModal";
 import "./header.css";
 
 const Header = (props: any) => {
-  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-    props.setFilter(e.currentTarget.value)
-}
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    props.setFilter(e.currentTarget.value);
+  };
 
   return (
     <header
@@ -41,21 +41,24 @@ const Header = (props: any) => {
           }}
         />
         <SwipeAbleTemporaryDrawer
-         myTask={props.myTask}
+          myTask={props.myTask}
           setMyTask={props.setMyTask}
-           filteredData={props.filteredData}
-            setFilteredData={props.setFilteredData}/>
+          setFilters={props.setFilters}
+          filters={props.filters}
+        />
         <AddModal
-         myTask={props.myTask}
+          myTask={props.myTask}
           setMyTask={props.setMyTask}
-           open={props.open}
-            setOpen={props.setOpen}
-             value={props.value}
-              setValue={props.setValue}
-               viewMode={props.viewMode} 
-                setViewMode={props.setViewMode}
-                 editMode={props.editMode}
-                  setEditMode={props.setEditMode}/>
+          open={props.open}
+          setOpen={props.setOpen}
+          value={props.value}
+          setValue={props.setValue}
+          viewMode={props.viewMode}
+          setViewMode={props.setViewMode}
+          editMode={props.editMode}
+          setEditMode={props.setEditMode}
+          
+        />
       </div>
     </header>
   );

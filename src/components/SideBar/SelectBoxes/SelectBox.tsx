@@ -1,9 +1,10 @@
-import React, { ChangeEvent} from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,15 +18,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function SelectBox(props:any) {
-
-
+function SelectBox(props: any) {
+  console.log(props.myTask);
   const classes = useStyles();
-  
-  const handleChange:any=(e:ChangeEvent<HTMLSelectElement>)=>{
-      props.setFilteredData(e.target.value)
-      console.log(props.filteredData)
-  }
+
+  useEffect(() => {
+    props.setFilters(props.filters);
+  }, [props.filters]);
+
+  const handleChange: any = (e: ChangeEvent<HTMLSelectElement>) => {
+    props.setFilters({ ...props.filters, [e.target.name]: e.target.value });
+    console.log(props.filters);
+  };
 
   return (
     <>
@@ -37,13 +41,12 @@ function SelectBox(props:any) {
           id="demo-simple-select-outlined"
           label="priority"
           name="priority"
+          defaultValue={0}
         >
-          <MenuItem value="All">
-            All
-          </MenuItem>
-          <MenuItem value={"Low"}>Low</MenuItem>
-          <MenuItem value={"Medium"}>Medium</MenuItem>
-          <MenuItem value={"High"}>High</MenuItem>
+          <MenuItem value={0}>All</MenuItem>
+          <MenuItem value={1}>Low</MenuItem>
+          <MenuItem value={2}>Medium</MenuItem>
+          <MenuItem value={3}>High</MenuItem>
         </Select>
       </FormControl>
       <FormControl variant="outlined" className={classes.formControl}>
@@ -54,14 +57,12 @@ function SelectBox(props:any) {
           id="demo-simple-select-outlined"
           label="status"
           name="status"
-          defaultValue={"All"}
+          defaultValue={0}
         >
-          <MenuItem value="All">
-            All
-          </MenuItem>
-          <MenuItem value={"Todo"}>Todo</MenuItem>
-          <MenuItem value={"Doing"}>Doing</MenuItem>
-          <MenuItem value={"Done"}>Done</MenuItem>
+          <MenuItem value={0}>All</MenuItem>
+          <MenuItem value={1}>Todo</MenuItem>
+          <MenuItem value={2}>Doing</MenuItem>
+          <MenuItem value={3}>Done</MenuItem>
         </Select>
       </FormControl>
       <FormControl variant="outlined" className={classes.formControl}>
@@ -72,16 +73,15 @@ function SelectBox(props:any) {
           id="demo-simple-select-outlined"
           label="deadline"
           name="deadline"
-          defaultValue={"All"}
+          defaultValue={0}
         >
-          <MenuItem value="All">
-            All
-          </MenuItem>
-          <MenuItem value={"Overdue"}>Overdue</MenuItem>
-          <MenuItem value={"For today"}>For today</MenuItem>
-          <MenuItem value={"For the future"}>For the future</MenuItem>
+          <MenuItem value={0}>All</MenuItem>
+          <MenuItem value={1}>Overdue</MenuItem>
+          <MenuItem value={2}>For today</MenuItem>
+          <MenuItem value={3}>For the future</MenuItem>
         </Select>
       </FormControl>
+      <Button color={"primary"} variant={"outlined"} onClick={()=>{props.setFilters({priority:0,status:0,deadline:0})}}>Reset all Filters</Button>
     </>
   );
 }

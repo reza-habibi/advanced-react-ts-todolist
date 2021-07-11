@@ -2,7 +2,7 @@ import { useState } from "react";
 import Header from "./components/header/header";
 import BasicTable from "./components/Table/Table";
 import "./App.css";
-import { TTask } from "./Types";
+import { TFilters, TTask } from "./Types";
 
 
 const App=()=> {
@@ -21,7 +21,11 @@ const App=()=> {
   })
   const [viewMode,setViewMode]=useState(false);
   const [editMode,setEditMode]=useState(false);
-
+  const [filters, setFilters] = useState<TFilters>({
+    priority: 0,
+    status: 0,
+    deadline: 0,
+  });
 
   return (
     <div className="w-100 h-100 d-flex flex-column ">
@@ -37,7 +41,9 @@ const App=()=> {
           viewMode={viewMode} 
           setViewMode={setViewMode}
           editMode={editMode}
-          setEditMode={setEditMode}/>
+          setEditMode={setEditMode}
+          setFilters={setFilters}
+          filters={filters} />
         
         <BasicTable myTask={myTask} 
           setMyTask={setMyTask} 
@@ -50,7 +56,9 @@ const App=()=> {
           viewMode={viewMode} 
           setViewMode={setViewMode}
           editMode={editMode}
-          setEditMode={setEditMode}/>
+          setEditMode={setEditMode}
+          setFilters={setFilters}
+          filters={filters}/>
       </div>
     </div>
   );
