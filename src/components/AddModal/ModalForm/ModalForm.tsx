@@ -61,8 +61,11 @@ const ModalForm = (props: any) => {
   };
 
   const addTask = (e: React.MouseEvent) => {
+    let valueRegex=/^(?!\s*$).+/
+
+
     e.preventDefault();
-    if (newTask.task !== "" && newTask.priority !==0 && newTask.status !==0) {
+    if (valueRegex.test(newTask.task)  && newTask.priority !==0 && newTask.status !==0) {
       if (props.editMode) {
         let oldTasks = props.myTask;
         oldTasks = oldTasks.filter(
