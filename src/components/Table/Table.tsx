@@ -13,6 +13,7 @@ import { Form } from "react-bootstrap";
 import { MdKeyboardArrowLeft, MdKeyboardArrowUp , MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 import TableBodyRow from "./TableBodyRow/TableBodyRow"; 
 import { TSortedList } from "../../Types";
+import { DateObject } from "react-multi-date-picker";
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -24,9 +25,10 @@ export default function BasicTable(props: any) {
 
   useEffect(() => {
     setTaskData(props.myTask);
+    setCopyTask(props.myTask)
   }, [props.myTask]);
 
-  const [copyTask] = useState(props.myTask)
+  const [copyTask,setCopyTask] = useState(props.myTask)
   const [taskData, setTaskData] = useState([...props.myTask]);
   const [sortedList, setSortedList] = useState<TSortedList>({
     priority: 0,
@@ -221,19 +223,19 @@ export default function BasicTable(props: any) {
     if (props.filters.deadline === 1) {
       return copyTask.filter(
         (item: { deadline: any }) =>
-          item.deadline < new Date(Date.now() + 1000 * 60 * 60 * 24)
+          item.deadline.dayOfBeginning < new DateObject({ calendar: "persian" }).dayOfBeginning
       );
     } else if (props.filters.deadline === 2) {
 
       return copyTask.filter(
         (item: { deadline: any }) =>
-          item.deadline === new Date(Date.now() + 1000 * 60 * 60 * 24)
-      );
+        item.deadline.dayOfBeginning === new DateObject({ calendar: "persian" }).dayOfBeginning
+        );
     } else if (props.filters.deadline === 3) {
       return copyTask.filter(
         (item: { deadline: any }) =>
-          item.deadline > new Date(Date.now() + 1000 * 60 * 60 * 24)
-      );
+        item.deadline.dayOfBeginning > new DateObject({ calendar: "persian" }).dayOfBeginning
+        );
     }
   };
 

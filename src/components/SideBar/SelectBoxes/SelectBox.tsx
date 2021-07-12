@@ -79,7 +79,7 @@ function SelectBox(props: any) {
           <MenuItem value={3}>For the future</MenuItem>
         </Select>
       </FormControl>
-      <Button color={"primary"} variant={"outlined"} onClick={()=>{props.setFilters({priority:0,status:0,deadline:0})}}>Reset all Filters</Button>
+      
     </>
   );
 }

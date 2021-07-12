@@ -11,7 +11,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import DatePicker , {DateObject}from "react-multi-date-picker";
+import DatePicker, { DateObject } from "react-multi-date-picker";
 import type { Value } from "react-multi-date-picker";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -40,7 +40,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ModalForm = (props: any) => {
-  const [value, setValue] = useState<Value>(new DateObject());
+  const [value, setValue] = useState<Value>(
+    new DateObject({ calendar: "persian" })
+  );
   const classes = useStyles();
   const [newTask, setNewTask] = useState<TNewTask>({
     id: props.editMode ? props.value.id : props.myTask.length + 1,
@@ -60,26 +62,29 @@ const ModalForm = (props: any) => {
 
   const addTask = (e: React.MouseEvent) => {
     e.preventDefault();
-
-    if (props.editMode) {
-      let oldTasks = props.myTask;
-      oldTasks = oldTasks.filter(
-        (item: { id: number }) => item.id !== props.value.id
-      );
-      let editTask = newTask;
-      if (value === new Date()) {
-        editTask.deadline = props.value.deadline;
+    if (newTask.task !== "" && newTask.priority !==0 && newTask.status !==0) {
+      if (props.editMode) {
+        let oldTasks = props.myTask;
+        oldTasks = oldTasks.filter(
+          (item: { id: number }) => item.id !== props.value.id
+        );
+        let editTask = newTask;
+        if (value === new Date()) {
+          editTask.deadline = props.value.deadline;
+        } else {
+          editTask.deadline = value;
+        }
+        oldTasks.push(editTask);
+        props.setMyTask(oldTasks);
+        props.onClick();
+        props.setValue("");
       } else {
-        editTask.deadline = value;
+        newTask.deadline = value;
+        props.setMyTask([...props.myTask, newTask]);
+        props.onClick();
       }
-      oldTasks.push(editTask);
-      props.setMyTask(oldTasks);
-      props.onClick();
-      props.setValue("");
-    } else {
-      newTask.deadline = value;
-      props.setMyTask([...props.myTask, newTask]);
-      props.onClick();
+    }else{
+      alert('Please Fill in required fields correctly')
     }
   };
 
@@ -88,21 +93,20 @@ const ModalForm = (props: any) => {
       <CssBaseline />
       <div className={classes.paper}>
         <Typography component="h1" variant="h5">
-          New Task
+          New Task 
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
                 onChange={getValue}
-                autoComplete="task"
+                autoComplete="task "
                 name="task"
                 variant="outlined"
                 defaultValue={props.value.task ? props.value.task : ""}
-                required
                 fullWidth
                 id="task"
-                label="New Task"
+                label="New Task *"
                 autoFocus
                 disabled={props.viewMode ? true : false}
               />
@@ -111,15 +115,18 @@ const ModalForm = (props: any) => {
             <Grid item xs={12} sm={4}>
               <FormControl variant="outlined" className="w-100">
                 <InputLabel id="demo-simple-select-outlined-label">
-                  Priority
+                  Priority *
                 </InputLabel>
                 <Select
+
                   onChange={getValue}
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="Priority"
                   name="priority"
-                  defaultValue={props.value.priority?props.value.priority:1}
+                  defaultValue={
+                    props.value.priority ? props.value.priority : ""
+                  }
                   disabled={props.viewMode ? true : false}
                   required
                 >
@@ -131,8 +138,8 @@ const ModalForm = (props: any) => {
             </Grid>
             <Grid item xs={12} sm={4}>
               <FormControl variant="outlined" className="w-100">
-                <InputLabel id="demo-simple-select-outlined-label">
-                  Status
+                <InputLabel id="demo-simple-select-outlined-label" >
+                  Status *
                 </InputLabel>
                 <Select
                   onChange={getValue}
@@ -142,7 +149,7 @@ const ModalForm = (props: any) => {
                   name="status"
                   required
                   disabled={props.viewMode ? true : false}
-                  defaultValue={props.value.status?props.value.status:1}
+                  defaultValue={props.value.status ? props.value.status : ""}
                 >
                   <MenuItem value={1}>Todo</MenuItem>
                   <MenuItem value={2}>Doing</MenuItem>
@@ -166,7 +173,7 @@ const ModalForm = (props: any) => {
               className="w-100 my-3 p-3"
               aria-label="Your Message"
               rowsMin={3}
-              defaultValue={props.editMode?props.value.message:null}
+              defaultValue={props.editMode ? props.value.message : null}
               placeholder="Your Message"
               name="message"
               disabled={props.viewMode ? true : false}

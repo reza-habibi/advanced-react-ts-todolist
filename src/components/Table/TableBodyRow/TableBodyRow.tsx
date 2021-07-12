@@ -4,6 +4,7 @@ import {
     TableRow,
     Chip,
   } from "@material-ui/core";
+import {DateObject} from 'react-multi-date-picker'
 
 function TableBodyRow({id,task,priority,status,deadline,handleRemove,handleEdit,handleView}:any) {
     return (
@@ -61,8 +62,8 @@ function TableBodyRow({id,task,priority,status,deadline,handleRemove,handleEdit,
                         : null
                     }
                     color={
-                      deadline >=
-                      new Date(Date.now() + 1000 * 60 * 60 * 24)
+                      deadline.dayOfBeginning >=
+                      new DateObject({ calendar: "persian" }).dayOfBeginning
                         ? "primary"
                         : "secondary"
                     }
