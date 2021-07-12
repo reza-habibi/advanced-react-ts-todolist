@@ -4,6 +4,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,7 +39,7 @@ function SelectBox(props: any) {
           id="demo-simple-select-outlined"
           label="priority"
           name="priority"
-          defaultValue={0}
+          value={props.filters.priority}
         >
           <MenuItem value={0}>All</MenuItem>
           <MenuItem value={1}>Low</MenuItem>
@@ -54,7 +55,7 @@ function SelectBox(props: any) {
           id="demo-simple-select-outlined"
           label="status"
           name="status"
-          defaultValue={0}
+          value={props.filters.status}
         >
           <MenuItem value={0}>All</MenuItem>
           <MenuItem value={1}>Todo</MenuItem>
@@ -70,7 +71,7 @@ function SelectBox(props: any) {
           id="demo-simple-select-outlined"
           label="deadline"
           name="deadline"
-          defaultValue={0}
+          value={props.filters.deadline}
         >
           <MenuItem value={0}>All</MenuItem>
           <MenuItem value={1}>Overdue</MenuItem>
@@ -78,7 +79,8 @@ function SelectBox(props: any) {
           <MenuItem value={3}>For the future</MenuItem>
         </Select>
       </FormControl>
-      
+      <Button color={"primary"} variant={"outlined"} onClick={()=>{props.setFilters({priority:0,status:0,deadline:0}
+        )}}>Reset all Filters</Button>
     </>
   );
 }

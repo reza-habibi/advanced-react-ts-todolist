@@ -40,8 +40,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ModalForm = (props: any) => {
-
-  const [value, setValue] = useState<Value>(new DateObject({ calendar: "persian" }));
+  const [value, setValue] = useState<Value>(
+    new DateObject({ calendar: "persian" })
+  );
   const classes = useStyles();
   const [newTask, setNewTask] = useState<TNewTask>({
     id: props.editMode ? props.value.id : props.myTask.length + 1,
