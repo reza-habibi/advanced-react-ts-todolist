@@ -11,7 +11,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import DatePicker from "react-multi-date-picker";
+import DatePicker , {DateObject}from "react-multi-date-picker";
 import type { Value } from "react-multi-date-picker";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ModalForm = (props: any) => {
-  const [value, setValue] = useState<Value>(new Date());
+  const [value, setValue] = useState<Value>(new DateObject());
   const classes = useStyles();
   const [newTask, setNewTask] = useState<TNewTask>({
     id: props.editMode ? props.value.id : props.myTask.length + 1,
@@ -119,7 +119,7 @@ const ModalForm = (props: any) => {
                   id="demo-simple-select-outlined"
                   label="Priority"
                   name="priority"
-                  defaultValue={props.value.priority}
+                  defaultValue={props.value.priority?props.value.priority:1}
                   disabled={props.viewMode ? true : false}
                   required
                 >
@@ -142,7 +142,7 @@ const ModalForm = (props: any) => {
                   name="status"
                   required
                   disabled={props.viewMode ? true : false}
-                  defaultValue={props.value.status}
+                  defaultValue={props.value.status?props.value.status:1}
                 >
                   <MenuItem value={1}>Todo</MenuItem>
                   <MenuItem value={2}>Doing</MenuItem>
@@ -166,7 +166,7 @@ const ModalForm = (props: any) => {
               className="w-100 my-3 p-3"
               aria-label="Your Message"
               rowsMin={3}
-              defaultValue={props.value.message}
+              defaultValue={props.editMode?props.value.message:null}
               placeholder="Your Message"
               name="message"
               disabled={props.viewMode ? true : false}
