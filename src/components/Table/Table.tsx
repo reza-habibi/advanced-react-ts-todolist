@@ -10,10 +10,11 @@ import {
   Paper,
 } from "@material-ui/core";
 import { Form } from "react-bootstrap";
-import { MdKeyboardArrowLeft, MdKeyboardArrowUp , MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
-import TableBodyRow from "./TableBodyRow/TableBodyRow"; 
-import { TSortedList } from "../../Types";
-import { DateObject } from "react-multi-date-picker";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import TableBodyRow from "./TableBodyRow/TableBodyRow";
+import { useSortableData } from "./../../hooks/useSortableData";
+import { useAppSelector } from "../../app/hooks";
+
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -23,90 +24,21 @@ const useStyles = makeStyles({
 export default function BasicTable(props: any) {
   const classes = useStyles();
 
-  useEffect(() => {
-    setTaskData(props.myTask);
-    setCopyTask(props.myTask)
-  }, [props.myTask]);
+  const { searchTodo } = useAppSelector((state) => state.todos);
 
-  const [copyTask,setCopyTask] = useState(props.myTask)
-  const [taskData, setTaskData] = useState([...props.myTask]);
-  const [sortedList, setSortedList] = useState<TSortedList>({
-    priority: 0,
-    status: 0,
-    deadline: 0,
-  });
   const [paginationValue, setPaginationValue] = useState<number>(0);
   const [pageCounts, setPageCounts] = useState<number>(1);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
-  function changeSortButton(sort: string) {
-    sort === "priority" &&
-      (sortedList.priority < 2
-        ? setSortedList({
-            priority: sortedList.priority + 1,
-            status: 0,
-            deadline: 0,
-          })
-        : setSortedList({ priority: 0, status: 0, deadline: 0 }));
-
-    sort === "status" &&
-      (sortedList.status < 2
-        ? setSortedList({
-            priority: 0,
-            status: sortedList.status + 1,
-            deadline: 0,
-          })
-        : setSortedList({ priority: 0, status: 0, deadline: 0 }));
-
-    sort === "deadline" &&
-      (sortedList.deadline < 2
-        ? setSortedList({
-            priority: 0,
-            status: 0,
-            deadline: sortedList.deadline + 1,
-          })
-        : setSortedList({ priority: 0, status: 0, deadline: 0 }));
-  }
-
-  useEffect(() => {
-    setTaskData([...props.myTask]);
-    sortedList.status === 1 &&
-      setTaskData([...taskData.sort((a, b) => a.status - b.status)]);
-    sortedList.status === 2 &&
-      setTaskData([...taskData.sort((a, b) => b.status - a.status)]);
-
-    sortedList.priority === 1 &&
-      setTaskData([...taskData.sort((a, b) => a.priority - b.priority)]);
-    sortedList.priority === 2 &&
-      setTaskData([...taskData.sort((a, b) => b.priority - a.priority)]);
-
-    sortedList.deadline === 1 &&
-      setTaskData([
-        ...taskData.sort((a, b) => a.deadline.unix - b.deadline.unix),
-      ]);
-    sortedList.deadline === 2 &&
-      setTaskData([
-        ...taskData.sort((a, b) => b.deadline.unix - a.deadline.unix),
-      ]);
-  }, [sortedList, props.myTask]);
-
-  function handleRemove(index: number) {
-    props.setMyTask(taskData.filter((item: any) => item.id !== index));
-  }
-
   function handleEdit(index: number) {
     props.setOpen(true);
-    props.setValue(
-      props.myTask.find((item: { id: number }) => item.id === index)
-    );
+
     props.setEditMode(true);
   }
 
   function handleView(index: number) {
     props.setOpen(true);
-    props.setValue(
-      props.myTask.find((item: { id: number }) => item.id === index)
-    );
+
     props.setViewMode(true);
   }
 
@@ -116,127 +48,24 @@ export default function BasicTable(props: any) {
 
   useEffect(() => {
     paginationValue !== 0
-      ? setPageCounts(taskData.length / paginationValue)
+      ? setPageCounts(searchTodo.length / paginationValue)
       : setPageCounts(1);
-    setTaskData([...taskData]);
-  }, [paginationValue]);
+  }, [paginationValue, searchTodo.length]);
 
   const pageNumberUp = () => {
-    pageNumber * paginationValue < taskData.length &&
+    pageNumber * paginationValue < searchTodo.length &&
       setPageNumber(pageNumber + 1);
   };
   const pageNumberDown = () => {
     pageNumber > 1 && setPageNumber(pageNumber - 1);
-  }
+  };
 
-  useEffect(() => {
-    setTaskData([...props.myTask]);
-
-    if (
-      props.filters.priority === 0 &&
-      props.filters.status === 0 &&
-      props.filters.deadline === 0
-    ) {
-      setTaskData([...props.myTask]);
-    } else if (
-      props.filters.priority !== 0 &&
-      props.filters.status === 0 &&
-      props.filters.deadline === 0
-    ) {
-      setTaskData(
-        copyTask.filter(
-          (item: { priority: number }) =>
-            item.priority === props.filters.priority
-        )
-      );
-    } else if (
-      props.filters.status !== 0 &&
-      props.filters.priority === 0 &&
-      props.filters.deadline === 0
-    ) {
-      setTaskData(
-        copyTask.filter(
-          (item: { status: number }) => item.status === props.filters.status
-        )
-      );
-    } else if (
-      props.filters.deadline !== 0 &&
-      props.filters.priority === 0 &&
-      props.filters.status === 0
-    ) {
-      setTaskData(filteredByDeadline());
-    } else if (
-      props.filters.priority !== 0 &&
-      props.filters.status !== 0 &&
-      props.filters.deadline === 0
-    ) {
-      setTaskData(
-        copyTask
-          .filter(
-            (item: { priority: number }) =>
-              item.priority === props.filters.priority
-          )
-          .filter(
-            (item: { status: number }) => item.status === props.filters.status
-          )
-      );
-    } else if (
-      props.filters.priority !== 0 &&
-      props.filters.status === 0 &&
-      props.filters.deadline !== 0
-    ) {
-      setTaskData(
-        filteredByDeadline().filter(
-          (item: { priority: number }) =>
-            item.priority === props.filters.priority
-        )
-      );
-    } else if (
-      props.filters.priority === 0 &&
-      props.filters.status !== 0 &&
-      props.filters.deadline !== 0
-    ) {
-      setTaskData(
-        filteredByDeadline().filter(
-          (item: { status: number }) => item.status === props.filters.status
-        )
-      );
-    } else if (
-      props.filters.priority !== 0 &&
-      props.filters.status !== 0 &&
-      props.filters.deadline !== 0
-    ) {
-      setTaskData(
-        filteredByDeadline()
-          .filter(
-            (item: { priority: number }) =>
-              item.priority === props.filters.priority
-          )
-          .filter(
-            (item: { status: number }) => item.status === props.filters.status
-          )
-      );
+  const { items, requestSort, sortConfig } = useSortableData(searchTodo);
+  const getClassNamesFor = (name: string) => {
+    if (!sortConfig) {
+      return;
     }
-  }, [props.filters]);
-
-  const filteredByDeadline: any = () => {
-    if (props.filters.deadline === 1) {
-      return copyTask.filter(
-        (item: { deadline: any }) =>
-          item.deadline.dayOfBeginning < new DateObject({ calendar: "persian" }).dayOfBeginning
-      );
-    } else if (props.filters.deadline === 2) {
-
-      return copyTask.filter(
-        (item: { deadline: any }) =>
-        item.deadline.dayOfBeginning === new DateObject({ calendar: "persian" }).dayOfBeginning
-        );
-    } else if (props.filters.deadline === 3) {
-      return copyTask.filter(
-        (item: { deadline: any }) =>
-        item.deadline.dayOfBeginning > new DateObject({ calendar: "persian" }).dayOfBeginning
-        );
-    }
+    return sortConfig.key === name ? sortConfig.direction : undefined;
   };
 
   return (
@@ -252,55 +81,32 @@ export default function BasicTable(props: any) {
             <TableCell
               style={{ cursor: "pointer" }}
               align="center"
-              onClick={() => changeSortButton("priority")}
+              onClick={() => requestSort("priority")}
+              className={getClassNamesFor("priority")}
             >
               Priority
-              {sortedList.priority === 0 ? (
-                <MdKeyboardArrowLeft size={24} />
-              ) : sortedList.priority === 1 ? (
-                <MdKeyboardArrowDown size={20} />
-              ) : (
-                <MdKeyboardArrowUp size={20} />
-              )}
             </TableCell>
             <TableCell
               style={{ cursor: "pointer" }}
               align="center"
-              onClick={() => changeSortButton("status")}
+              onClick={() => requestSort("status")}
+              className={getClassNamesFor("status")}
             >
               Status
-              {sortedList.status === 0 ? (
-                <MdKeyboardArrowLeft size={20} />
-              ) : sortedList.status === 1 ? (
-                <MdKeyboardArrowDown size={20} />
-              ) : (
-                <MdKeyboardArrowUp size={20} />
-              )}
             </TableCell>
             <TableCell
               style={{ cursor: "pointer" }}
               align="center"
-              onClick={() => changeSortButton("deadline")}
+              onClick={() => requestSort("deadline")}
+              className={getClassNamesFor("deadline")}
             >
               Deadline
-              {sortedList.deadline === 0 ? (
-                <MdKeyboardArrowLeft size={20} />
-              ) : sortedList.deadline === 1 ? (
-                <MdKeyboardArrowDown size={20} />
-              ) : (
-                <MdKeyboardArrowUp size={20} />
-              )}
             </TableCell>
             <TableCell align="center">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {taskData
-            .filter((item) =>
-              item.task.toLowerCase().includes(props.filter.toLowerCase())
-            )
-            // eslint-disable-next-line array-callback-return
-            .map((item, index) => {
+          {items.map((item, index) => {
               if (paginationValue !== 0) {
                 if (
                   pageNumber * paginationValue - paginationValue <= index &&
@@ -309,14 +115,9 @@ export default function BasicTable(props: any) {
                   return (
                     <TableBodyRow
                       key={index}
-                      id={item.id}
-                      task={item.task}
-                      priority={item.priority}
-                      status={item.status}
-                      deadline={item.deadline}
+                      item={item}
                       handleView={handleView}
                       handleEdit={handleEdit}
-                      handleRemove={handleRemove}
                     />
                   );
                 }
@@ -324,14 +125,9 @@ export default function BasicTable(props: any) {
                 return (
                   <TableBodyRow
                     key={index}
-                    id={item.id}
-                    task={item.task}
-                    priority={item.priority}
-                    status={item.status}
-                    deadline={item.deadline}
+                    item={item}
                     handleView={handleView}
                     handleEdit={handleEdit}
-                    handleRemove={handleRemove}
                   />
                 );
               }

@@ -5,7 +5,6 @@ export type TNewTask = {
   deadline: any;
   message?: string;
   id: number;
-  unix:number
 };
 
 export type TTask = {
@@ -14,8 +13,7 @@ export type TTask = {
   status: number;
   deadline: any;
   message?: string;
-  id: number;
-  unix:number;
+  id: string;
 };
 
 export type TModal = {
@@ -30,8 +28,8 @@ export type TSortedList = {
   deadline: number;
 };
 
-export type TFilters={
-  priority:number;
-  status:number;
-  deadline:number;
-}
+export type TFilters = {
+  priority: number;
+  status: number;
+  deadline: number;
+};

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import {
@@ -17,7 +17,9 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import "./ModalFrom.Style.css";
-import { TNewTask } from "../../../Types";
+import { useAppDispatch } from "./../../../app/hooks";
+import { newTodo } from "./../../../redux/newTodoAction";
+import { v4 as uuidv4 } from "uuid";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,54 +42,37 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ModalForm = (props: any) => {
+  const dispatch = useAppDispatch();
+
   const [value, setValue] = useState<Value>(
     new DateObject({ calendar: "persian" })
   );
   const classes = useStyles();
-  const [newTask, setNewTask] = useState<TNewTask>({
-    id: props.editMode ? props.value.id : props.myTask.length + 1,
-    task: props.editMode ? props.value.task : "",
-    priority: props.editMode ? props.value.priority : 0,
-    status: props.editMode ? props.value.status : 0,
-    deadline: props.editMode ? props.value.deadLine : 0,
-    message: props.editMode ? props.value.message : "",
-    unix: props.editMode ? props.value.unix : 0,
-  });
 
-  const getValue: any = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setNewTask({ ...newTask, [e.target.name]: e.target.value });
-  };
+  const [task, setTask] = useState("");
+  const [priority, setPriority] = useState(0);
+  const [status, setStatus] = useState(0);
+  const [message, setMessage] = useState("");
 
   const addTask = (e: React.MouseEvent) => {
-    let valueRegex=/^(?!\s*$).+/
-
+    let valueRegex = /^(?!\s*$).+/;
 
     e.preventDefault();
-    if (valueRegex.test(newTask.task)  && newTask.priority !==0 && newTask.status !==0) {
-      if (props.editMode) {
-        let oldTasks = props.myTask;
-        oldTasks = oldTasks.filter(
-          (item: { id: number }) => item.id !== props.value.id
-        );
-        let editTask = newTask;
-        if (value === new Date()) {
-          editTask.deadline = props.value.deadline;
-        } else {
-          editTask.deadline = value;
-        }
-        oldTasks.push(editTask);
-        props.setMyTask(oldTasks);
-        props.onClick();
-        props.setValue("");
-      } else {
-        newTask.deadline = value;
-        props.setMyTask([...props.myTask, newTask]);
-        props.onClick();
-      }
-    }else{
-      alert('Please Fill in required fields correctly')
+
+    if (valueRegex.test(task) && priority && status) {
+      dispatch(
+        newTodo({
+          id: uuidv4(),
+          task,
+          priority,
+          status,
+          deadline: value?.toLocaleString("fa"),
+          message,
+        })
+      );
+      props.setOpen(false);
+    } else {
+      alert("fill all fields");
     }
   };
 
@@ -96,17 +81,16 @@ const ModalForm = (props: any) => {
       <CssBaseline />
       <div className={classes.paper}>
         <Typography component="h1" variant="h5">
-          New Task 
+          New Task
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                onChange={getValue}
+                onChange={(e: any) => setTask(e.target.value)}
                 autoComplete="task "
                 name="task"
                 variant="outlined"
-                defaultValue={props.value.task ? props.value.task : ""}
                 fullWidth
                 id="task"
                 label="New Task *"
@@ -121,15 +105,11 @@ const ModalForm = (props: any) => {
                   Priority *
                 </InputLabel>
                 <Select
-
-                  onChange={getValue}
+                  onChange={(e: any) => setPriority(e.target.value)}
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="Priority"
                   name="priority"
-                  defaultValue={
-                    props.value.priority ? props.value.priority : ""
-                  }
                   disabled={props.viewMode ? true : false}
                   required
                 >
@@ -141,18 +121,17 @@ const ModalForm = (props: any) => {
             </Grid>
             <Grid item xs={12} sm={4}>
               <FormControl variant="outlined" className="w-100">
-                <InputLabel id="demo-simple-select-outlined-label" >
+                <InputLabel id="demo-simple-select-outlined-label">
                   Status *
                 </InputLabel>
                 <Select
-                  onChange={getValue}
+                  onChange={(e: any) => setStatus(e.target.value)}
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="Status"
                   name="status"
                   required
                   disabled={props.viewMode ? true : false}
-                  defaultValue={props.value.status ? props.value.status : ""}
                 >
                   <MenuItem value={1}>Todo</MenuItem>
                   <MenuItem value={2}>Doing</MenuItem>
@@ -162,7 +141,7 @@ const ModalForm = (props: any) => {
             </Grid>
             <Grid item xs={12} sm={4}>
               <DatePicker
-                value={props.editMode ? props.value.deadline : value}
+                value={value}
                 onChange={setValue}
                 locale="fa"
                 calendar="persian"
@@ -172,11 +151,10 @@ const ModalForm = (props: any) => {
           </Grid>
           <Grid item xs={12}>
             <TextareaAutosize
-              onChange={getValue}
+              onChange={(e: any) => setMessage(e.target.value)}
               className="w-100 my-3 p-3"
               aria-label="Your Message"
               rowsMin={3}
-              defaultValue={props.editMode ? props.value.message : null}
               placeholder="Your Message"
               name="message"
               disabled={props.viewMode ? true : false}

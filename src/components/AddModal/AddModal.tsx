@@ -57,12 +57,9 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(
 });
 
 const SpringModal = ({
-  myTask,
-  setMyTask,
+
   open,
   setOpen,
-  value,
-  setValue,
   setViewMode,
   setEditMode,
   viewMode,
@@ -78,7 +75,6 @@ const SpringModal = ({
     setOpen(false);
     setEditMode(false);
     setViewMode(false);
-    setValue("");
   };
 
   return (
@@ -102,14 +98,11 @@ const SpringModal = ({
           <div className={classes.paper}>
             <ModalForm
               onClick={handleClose}
-              myTask={myTask}
-              setMyTask={setMyTask}
-              value={value}
-              setValue={setValue}
               viewMode={viewMode}
               setViewMode={setViewMode}
               editMode={editMode}
               setEditMode={setEditMode}
+              setOpen={setOpen}
               open={open}
             />
           </div>

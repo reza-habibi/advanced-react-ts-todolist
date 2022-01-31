@@ -1,3 +1,15 @@
-.header{
-    height: 6%;
+.header {
+  height: 6%;
+}
+
+.ascending::after {
+  content: "👇";
+  display: inline-block;
+  margin-left: 1em;
+}
+
+.descending::after {
+  content: "☝️";
+  display: inline-block;
+  margin-left: 1em;
 }

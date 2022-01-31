@@ -7,10 +7,13 @@ import SearchIcon from "@material-ui/icons/Search";
 import SwipeAbleTemporaryDrawer from "../SideBar/SideBar";
 import AddModal from "../AddModal/AddModal";
 import "./header.css";
+import { useAppDispatch } from "../../app/hooks";
+import { searchTodo } from "../../redux/todoSlicer";
 
 const Header = (props: any) => {
+  const dispatch = useAppDispatch();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    props.setFilter(e.currentTarget.value);
+    dispatch(searchTodo(e.target.value));
   };
 
   return (
@@ -41,18 +44,12 @@ const Header = (props: any) => {
           }}
         />
         <SwipeAbleTemporaryDrawer
-          myTask={props.myTask}
-          setMyTask={props.setMyTask}
           setFilters={props.setFilters}
           filters={props.filters}
         />
         <AddModal
-          myTask={props.myTask}
-          setMyTask={props.setMyTask}
           open={props.open}
           setOpen={props.setOpen}
-          value={props.value}
-          setValue={props.setValue}
           viewMode={props.viewMode}
           setViewMode={props.setViewMode}
           editMode={props.editMode}
