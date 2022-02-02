@@ -17,9 +17,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import "./ModalFrom.Style.css";
 import { useAppDispatch, useAppSelector } from "./../../../app/hooks";
-import { newTodo } from "./../../../redux/newTodoAction";
+import { editCurrentTodo, newTodo } from "./../../../redux/newTodoAction";
 import { v4 as uuidv4 } from "uuid";
-import { openModal, showTodo, editTodo } from "../../../redux/todoSlicer";
+import { openModal, showMode, editMode } from "../../../redux/todoSlicer";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -43,19 +43,25 @@ const useStyles = makeStyles((theme) => ({
 
 const ModalForm = (props: any) => {
   const dispatch = useAppDispatch();
+  const { currentTodo, edit, show } = useAppSelector((state) => state.todos);
 
   const [value, setValue] = useState<any>(
-    new DateObject({ calendar: "persian" })
+    show || edit
+      ? new DateObject({
+          date: `${currentTodo.deadline.year}/${currentTodo.deadline.month}/${currentTodo.deadline.day}`,
+          calendar: "persian",
+          locale: "fa",
+        })
+      : new DateObject({ calendar: "persian" })
   );
   const classes = useStyles();
 
-  const { currentTodo, editMode, showMode } = useAppSelector(
-    (state) => state.todos
-  );
 
-  const [task, setTask] = useState("");
-  const [priority, setPriority] = useState(1);
-  const [status, setStatus] = useState(1);
+  const [task, setTask] = useState(show || edit ? currentTodo.task : "");
+  const [priority, setPriority] = useState(
+    show || edit ? currentTodo.priority : 1
+  );
+  const [status, setStatus] = useState(show || edit ? currentTodo.status : 1);
   const [message, setMessage] = useState("");
 
   const addTask = (e: React.MouseEvent) => {
@@ -64,21 +70,37 @@ const ModalForm = (props: any) => {
     e.preventDefault();
 
     if (valueRegex.test(task) && priority && status) {
-      dispatch(
-        newTodo({
-          id: uuidv4(),
-          task,
-          priority,
-          status,
-          deadline: {
-            day: value.day,
-            month: value.month.number,
-            year: value.year,
-            dayOfBeginning: value.dayOfBeginning,
-          },
-          message,
-        })
-      );
+      edit
+        ? dispatch(
+            editCurrentTodo({
+              id: currentTodo.id,
+              task,
+              priority,
+              status,
+              deadline: {
+                day: value.day,
+                month: value.month.number,
+                year: value.year,
+                dayOfBeginning: value.dayOfBeginning,
+              },
+              message,
+            })
+          )
+        : dispatch(
+            newTodo({
+              id: uuidv4(),
+              task,
+              priority,
+              status,
+              deadline: {
+                day: value.day,
+                month: value.month.number,
+                year: value.year,
+                dayOfBeginning: value.dayOfBeginning,
+              },
+              message,
+            })
+          );
       dispatch(openModal(false));
     } else {
       alert("fill all fields");
@@ -87,7 +109,7 @@ const ModalForm = (props: any) => {
 
   const handleClose = () => {
     dispatch(openModal(false));
-    dispatch(showMode ? showTodo(false) : editTodo(false));
+    dispatch(show ? showMode(false) : editMode(false));
   };
 
   return (
@@ -102,7 +124,7 @@ const ModalForm = (props: any) => {
             <Grid item xs={12}>
               <TextField
                 onChange={(e: any) => setTask(e.target.value)}
-                value={showMode || editMode ? currentTodo.task : task}
+                value={task}
                 autoComplete="task "
                 name="task"
                 variant="outlined"
@@ -110,7 +132,7 @@ const ModalForm = (props: any) => {
                 id="task"
                 label="New Task *"
                 autoFocus
-                disabled={showMode ? true : false}
+                disabled={show ? true : false}
               />
             </Grid>
 
@@ -121,12 +143,12 @@ const ModalForm = (props: any) => {
                 </InputLabel>
                 <Select
                   onChange={(e: any) => setPriority(e.target.value)}
-                  value={showMode || editMode ? currentTodo.priority : priority}
+                  value={priority}
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="Priority"
                   name="priority"
-                  disabled={showMode ? true : false}
+                  disabled={show ? true : false}
                   required
                 >
                   <MenuItem value={1}>Low</MenuItem>
@@ -142,13 +164,13 @@ const ModalForm = (props: any) => {
                 </InputLabel>
                 <Select
                   onChange={(e: any) => setStatus(e.target.value)}
-                  value={showMode || editMode ? currentTodo.status : status}
+                  value={status}
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="Status"
                   name="status"
                   required
-                  disabled={showMode ? true : false}
+                  disabled={show ? true : false}
                 >
                   <MenuItem value={1}>Todo</MenuItem>
                   <MenuItem value={2}>Doing</MenuItem>
@@ -158,33 +180,25 @@ const ModalForm = (props: any) => {
             </Grid>
             <Grid item xs={12} sm={4}>
               <DatePicker
-                value={
-                  showMode || editMode
-                    ? new DateObject({
-                        date: `${currentTodo.deadline.year}/${currentTodo.deadline.month}/${currentTodo.deadline.day}`,
-                        calendar: "persian",
-                        locale: "fa",
-                      })
-                    : value
-                }
+                value={value}
                 onChange={setValue}
                 calendar="persian"
                 locale="fa"
                 calendarPosition="bottom-right"
-                disabled={showMode ? true : false}
+                disabled={show ? true : false}
               />
             </Grid>
           </Grid>
           <Grid item xs={12}>
             <TextareaAutosize
               onChange={(e: any) => setMessage(e.target.value)}
-              value={showMode || editMode ? currentTodo.message : message}
+              value={show || edit ? currentTodo.message : message}
               className="w-100 my-3 p-3"
               aria-label="Your Message"
               rowsMin={3}
               placeholder="Your Message"
               name="message"
-              disabled={showMode ? true : false}
+              disabled={show ? true : false}
             />
           </Grid>
           <Divider />
@@ -194,12 +208,12 @@ const ModalForm = (props: any) => {
               item
             >
               <Button color="primary" onClick={handleClose}>
-                {showMode ? "Close" : "Cancel"}
+                {show ? "Close" : "Cancel"}
               </Button>
               {props.open === true ? (
-                showMode ? null : (
+                show ? null : (
                   <Button onClick={addTask} variant="contained" color="primary">
-                    {editMode ? "Edit" : "Save"}
+                    {edit ? "Edit" : "Save"}
                   </Button>
                 )
               ) : null}

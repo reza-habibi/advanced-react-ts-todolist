@@ -6,8 +6,8 @@ const initialState: {
   todos: TTask[];
   error: string;
   searchTodo: TTask[];
-  showMode: boolean;
-  editMode: boolean;
+  show: boolean;
+  edit: boolean;
   currentTodo: TTask;
   opened: boolean;
 } = {
@@ -19,13 +19,13 @@ const initialState: {
   searchTodo: localStorage.getItem("tasks")
     ? JSON.parse(localStorage.getItem("tasks") || "")
     : [],
-  showMode: false,
-  editMode: false,
+  show: false,
+  edit: false,
   currentTodo: {
     task: "",
     priority: 0,
     status: 0,
-    deadline: '',
+    deadline: "",
     message: "",
     id: "",
   },
@@ -62,17 +62,26 @@ const NewTodoSlicer = createSlice({
         return todo.task.includes(payload);
       });
     },
-    showTodo: (state, { payload }) => {
-      state.showMode = payload;
+    showMode: (state, { payload }) => {
+      state.show = payload;
     },
     currentTodo: (state, { payload }) => {
       state.currentTodo = payload;
     },
-    editTodo: (state, { payload }) => {
-      state.editMode = payload;
+    editMode: (state, { payload }) => {
+      state.edit = payload;
     },
     openModal: (state, { payload }) => {
       state.opened = payload;
+    },
+    editTodo: (state, { payload }) => {
+      state.currentTodo = payload;
+      const index = state.todos.findIndex(
+        (todo: TTask) => todo.id === payload.id
+      );
+      state.todos[index] = payload;
+      state.searchTodo[index] = payload;
+      localStorage.setItem("tasks", JSON.stringify(state.todos));
     },
   },
 });
@@ -85,10 +94,11 @@ export const {
   failNewTodo,
   removeTodo,
   searchTodo,
-  showTodo,
+  showMode,
   currentTodo,
-  editTodo,
+  editMode,
   openModal,
+  editTodo,
 } = actions;
 
 export default reducer;

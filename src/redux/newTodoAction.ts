@@ -4,8 +4,9 @@ import {
   failNewTodo,
   removeTodo,
   searchTodo,
-  showTodo,
+  showMode,
   currentTodo,
+  editMode,
   editTodo,
 } from "./todoSlicer";
 import { TTask } from "../type";
@@ -29,11 +30,12 @@ export const filterSearchTodo = (str: string) => (dispatch: any) => {
 };
 
 export const showCurrentTodo = (todo: TTask) => (dispatch: any) => {
-  dispatch(showTodo(true));
+  dispatch(showMode(true));
   dispatch(currentTodo(todo));
 };
 
 export const editCurrentTodo = (todo: TTask) => (dispatch: any) => {
-  dispatch(editTodo(true));
-  dispatch(currentTodo(todo));
+  console.log(todo);
+  dispatch(editMode(true));
+  dispatch(editTodo(todo));
 };
