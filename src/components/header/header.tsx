@@ -47,14 +47,7 @@ const Header = (props: any) => {
           setFilters={props.setFilters}
           filters={props.filters}
         />
-        <AddModal
-          open={props.open}
-          setOpen={props.setOpen}
-          viewMode={props.viewMode}
-          setViewMode={props.setViewMode}
-          editMode={props.editMode}
-          setEditMode={props.setEditMode}
-        />
+        <AddModal/>
       </div>
     </header>
   );

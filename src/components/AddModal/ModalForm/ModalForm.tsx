@@ -12,14 +12,14 @@ import {
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import DatePicker, { DateObject } from "react-multi-date-picker";
-import type { Value } from "react-multi-date-picker";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import "./ModalFrom.Style.css";
-import { useAppDispatch } from "./../../../app/hooks";
+import { useAppDispatch, useAppSelector } from "./../../../app/hooks";
 import { newTodo } from "./../../../redux/newTodoAction";
 import { v4 as uuidv4 } from "uuid";
+import { openModal, showTodo, editTodo } from "../../../redux/todoSlicer";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,14 +44,18 @@ const useStyles = makeStyles((theme) => ({
 const ModalForm = (props: any) => {
   const dispatch = useAppDispatch();
 
-  const [value, setValue] = useState<Value>(
+  const [value, setValue] = useState<any>(
     new DateObject({ calendar: "persian" })
   );
   const classes = useStyles();
 
+  const { currentTodo, editMode, showMode } = useAppSelector(
+    (state) => state.todos
+  );
+
   const [task, setTask] = useState("");
-  const [priority, setPriority] = useState(0);
-  const [status, setStatus] = useState(0);
+  const [priority, setPriority] = useState(1);
+  const [status, setStatus] = useState(1);
   const [message, setMessage] = useState("");
 
   const addTask = (e: React.MouseEvent) => {
@@ -66,14 +70,24 @@ const ModalForm = (props: any) => {
           task,
           priority,
           status,
-          deadline: value?.toLocaleString("fa"),
+          deadline: {
+            day: value.day,
+            month: value.month.number,
+            year: value.year,
+            dayOfBeginning: value.dayOfBeginning,
+          },
           message,
         })
       );
-      props.setOpen(false);
+      dispatch(openModal(false));
     } else {
       alert("fill all fields");
     }
+  };
+
+  const handleClose = () => {
+    dispatch(openModal(false));
+    dispatch(showMode ? showTodo(false) : editTodo(false));
   };
 
   return (
@@ -88,6 +102,7 @@ const ModalForm = (props: any) => {
             <Grid item xs={12}>
               <TextField
                 onChange={(e: any) => setTask(e.target.value)}
+                value={showMode || editMode ? currentTodo.task : task}
                 autoComplete="task "
                 name="task"
                 variant="outlined"
@@ -95,7 +110,7 @@ const ModalForm = (props: any) => {
                 id="task"
                 label="New Task *"
                 autoFocus
-                disabled={props.viewMode ? true : false}
+                disabled={showMode ? true : false}
               />
             </Grid>
 
@@ -106,11 +121,12 @@ const ModalForm = (props: any) => {
                 </InputLabel>
                 <Select
                   onChange={(e: any) => setPriority(e.target.value)}
+                  value={showMode || editMode ? currentTodo.priority : priority}
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="Priority"
                   name="priority"
-                  disabled={props.viewMode ? true : false}
+                  disabled={showMode ? true : false}
                   required
                 >
                   <MenuItem value={1}>Low</MenuItem>
@@ -126,12 +142,13 @@ const ModalForm = (props: any) => {
                 </InputLabel>
                 <Select
                   onChange={(e: any) => setStatus(e.target.value)}
+                  value={showMode || editMode ? currentTodo.status : status}
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="Status"
                   name="status"
                   required
-                  disabled={props.viewMode ? true : false}
+                  disabled={showMode ? true : false}
                 >
                   <MenuItem value={1}>Todo</MenuItem>
                   <MenuItem value={2}>Doing</MenuItem>
@@ -141,23 +158,33 @@ const ModalForm = (props: any) => {
             </Grid>
             <Grid item xs={12} sm={4}>
               <DatePicker
-                value={value}
+                value={
+                  showMode || editMode
+                    ? new DateObject({
+                        date: `${currentTodo.deadline.year}/${currentTodo.deadline.month}/${currentTodo.deadline.day}`,
+                        calendar: "persian",
+                        locale: "fa",
+                      })
+                    : value
+                }
                 onChange={setValue}
-                locale="fa"
                 calendar="persian"
-                disabled={props.viewMode ? true : false}
+                locale="fa"
+                calendarPosition="bottom-right"
+                disabled={showMode ? true : false}
               />
             </Grid>
           </Grid>
           <Grid item xs={12}>
             <TextareaAutosize
               onChange={(e: any) => setMessage(e.target.value)}
+              value={showMode || editMode ? currentTodo.message : message}
               className="w-100 my-3 p-3"
               aria-label="Your Message"
               rowsMin={3}
               placeholder="Your Message"
               name="message"
-              disabled={props.viewMode ? true : false}
+              disabled={showMode ? true : false}
             />
           </Grid>
           <Divider />
@@ -166,13 +193,13 @@ const ModalForm = (props: any) => {
               className="w-100 mt-5 d-flex justify-content-between align-items-center"
               item
             >
-              <Button color="primary" onClick={props.onClick}>
-                {props.viewMode ? "Close" : "Cancel"}
+              <Button color="primary" onClick={handleClose}>
+                {showMode ? "Close" : "Cancel"}
               </Button>
               {props.open === true ? (
-                props.viewMode ? null : (
+                showMode ? null : (
                   <Button onClick={addTask} variant="contained" color="primary">
-                    {props.editMode ? "Edit" : "Save"}
+                    {editMode ? "Edit" : "Save"}
                   </Button>
                 )
               ) : null}

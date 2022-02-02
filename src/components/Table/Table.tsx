@@ -30,17 +30,7 @@ export default function BasicTable(props: any) {
   const [pageCounts, setPageCounts] = useState<number>(1);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
-  function handleEdit(index: number) {
-    props.setOpen(true);
 
-    props.setEditMode(true);
-  }
-
-  function handleView(index: number) {
-    props.setOpen(true);
-
-    props.setViewMode(true);
-  }
 
   function paginationChange(e: React.ChangeEvent<HTMLSelectElement>) {
     setPaginationValue(parseFloat(e.target.value));
@@ -107,31 +97,17 @@ export default function BasicTable(props: any) {
         </TableHead>
         <TableBody>
           {items.map((item, index) => {
-              if (paginationValue !== 0) {
-                if (
-                  pageNumber * paginationValue - paginationValue <= index &&
-                  index < pageNumber * paginationValue
-                ) {
-                  return (
-                    <TableBodyRow
-                      key={index}
-                      item={item}
-                      handleView={handleView}
-                      handleEdit={handleEdit}
-                    />
-                  );
-                }
-              } else {
-                return (
-                  <TableBodyRow
-                    key={index}
-                    item={item}
-                    handleView={handleView}
-                    handleEdit={handleEdit}
-                  />
-                );
+            if (paginationValue !== 0) {
+              if (
+                pageNumber * paginationValue - paginationValue <= index &&
+                index < pageNumber * paginationValue
+              ) {
+                return <TableBodyRow key={item.id} item={item} />;
               }
-            })}
+            } else {
+              return <TableBodyRow key={item.id} item={item} />;
+            }
+          })}
         </TableBody>
       </Table>
       <div className={"w-100 d-flex justify-content-end"}>

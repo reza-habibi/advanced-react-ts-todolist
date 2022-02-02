@@ -1,14 +1,30 @@
 import { Edit, Delete, Visibility } from "@material-ui/icons";
 import { TableCell, TableRow, Chip } from "@material-ui/core";
 import { useAppDispatch } from "../../../app/hooks";
-import { removeTodos } from "../../../redux/newTodoAction";
+import {
+  removeTodos,
+  showCurrentTodo,
+  editCurrentTodo,
+} from "../../../redux/newTodoAction";
+import { openModal } from "../../../redux/todoSlicer";
+import { DateObject } from "react-multi-date-picker";
+import { TTask } from "../../../type";
 
-function TableBodyRow({
-  item: { id, task, priority, status, deadline },
-  handleEdit,
-  handleView,
-}: any) {
+function TableBodyRow({ item }: { item: TTask }) {
   const dispatch = useAppDispatch();
+  const { id, task, priority, status, deadline } = item;
+
+  const today = new DateObject({ calendar: "persian" });
+
+  const handleView = () => {
+    dispatch(showCurrentTodo(item));
+    dispatch(openModal(true));
+  };
+
+  const handleEdit = () => {
+    dispatch(editCurrentTodo(item));
+    dispatch(openModal(true));
+  };
 
   return (
     <TableRow>
@@ -43,9 +59,9 @@ function TableBodyRow({
       </TableCell>
       <TableCell align="center">
         <Chip
-          label={deadline}
+          label={`${deadline.year}/${deadline.month}/${deadline.day}`}
           color={
-            deadline >= new Date().toLocaleString("fa")
+            deadline.dayOfBeginning >= today.dayOfBeginning
               ? "primary"
               : "secondary"
           }
@@ -54,8 +70,11 @@ function TableBodyRow({
       </TableCell>
       <TableCell align="center">
         <div className="icons w-50 d-flex justify-content-between align-item-center mx-auto">
-          <Visibility onClick={() => handleView(id)} />
-          <Edit onClick={() => handleEdit(id)} />
+          <Visibility
+            onClick={() => handleView()}
+            style={{ cursor: "pointer" }}
+          />
+          <Edit onClick={() => handleEdit()} style={{ cursor: "pointer" }} />
           <Delete
             onClick={() => dispatch(removeTodos(id))}
             style={{ cursor: "pointer" }}

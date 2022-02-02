@@ -1,3 +1,4 @@
+
 export type TNewTask = {
   task: string;
   priority: number;

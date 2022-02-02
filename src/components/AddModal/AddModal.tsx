@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState , useEffect} from "react";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -6,6 +6,9 @@ import { MdModeEdit } from "react-icons/md";
 import { useSpring, animated } from "react-spring/dist/react-spring.cjs";
 
 import ModalForm from "./ModalForm/ModalForm";
+import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch } from "./../../app/hooks";
+import { openModal } from "../../redux/todoSlicer";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     modal: {
@@ -56,25 +59,23 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(
   );
 });
 
-const SpringModal = ({
+const SpringModal = () => {
+  const { opened } = useAppSelector((state) => state.todos);
+  const dispatch = useAppDispatch();
+  const [open, setOpen] = useState(false);
 
-  open,
-  setOpen,
-  setViewMode,
-  setEditMode,
-  viewMode,
-  editMode,
-}: any) => {
+  useEffect(() => {
+    setOpen(opened);
+  }, [opened]);
+
   const classes = useStyles();
 
   const handleOpen = () => {
-    setOpen(true);
+    dispatch(openModal(true));
   };
 
   const handleClose = () => {
-    setOpen(false);
-    setEditMode(false);
-    setViewMode(false);
+    dispatch(openModal(false));
   };
 
   return (
@@ -92,19 +93,11 @@ const SpringModal = ({
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
-        }}>
-          
+        }}
+      >
         <Fade in={open}>
           <div className={classes.paper}>
-            <ModalForm
-              onClick={handleClose}
-              viewMode={viewMode}
-              setViewMode={setViewMode}
-              editMode={editMode}
-              setEditMode={setEditMode}
-              setOpen={setOpen}
-              open={open}
-            />
+            <ModalForm onClick={handleClose} setOpen={setOpen} open={open} />
           </div>
         </Fade>
       </Modal>

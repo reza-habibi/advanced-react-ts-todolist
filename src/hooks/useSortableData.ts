@@ -5,12 +5,23 @@ export const useSortableData = (items: any, config = null) => {
 
   const sortedItems = useMemo(() => {
     let sortableItems = [...items];
-    if (sortConfig !== null) {
+    if (sortConfig !== null && sortConfig !== "deadline") {
       sortableItems.sort((a, b) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
           return sortConfig.direction === "ascending" ? -1 : 1;
         }
         if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "ascending" ? 1 : -1;
+        }
+        return 0;
+      });
+    } 
+     if (sortConfig?.key === "deadline") {
+      sortableItems.sort((a, b) => {
+        if (a['deadline'].dayOfBeginning < b['deadline'].dayOfBeginning) {
+          return sortConfig.direction === "ascending" ? -1 : 1;
+        }
+        if (a['deadline'].dayOfBeginning > b['deadline'].dayOfBeginning) {
           return sortConfig.direction === "ascending" ? 1 : -1;
         }
         return 0;

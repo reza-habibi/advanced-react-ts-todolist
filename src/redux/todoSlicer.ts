@@ -6,11 +6,30 @@ const initialState: {
   todos: TTask[];
   error: string;
   searchTodo: TTask[];
+  showMode: boolean;
+  editMode: boolean;
+  currentTodo: TTask;
+  opened: boolean;
 } = {
   loading: false,
-  todos: [],
+  todos: localStorage.getItem("tasks")
+    ? JSON.parse(localStorage.getItem("tasks") || "")
+    : [],
   error: "",
-  searchTodo: [],
+  searchTodo: localStorage.getItem("tasks")
+    ? JSON.parse(localStorage.getItem("tasks") || "")
+    : [],
+  showMode: false,
+  editMode: false,
+  currentTodo: {
+    task: "",
+    priority: 0,
+    status: 0,
+    deadline: '',
+    message: "",
+    id: "",
+  },
+  opened: false,
 };
 
 const NewTodoSlicer = createSlice({
@@ -22,7 +41,8 @@ const NewTodoSlicer = createSlice({
     },
     addNewTodo: (state, { payload }) => {
       state.loading = false;
-      state.todos = [...state.todos, payload];
+      state.todos.push(payload);
+      localStorage.setItem("tasks", JSON.stringify(state.todos));
       state.searchTodo = [...state.todos];
     },
     failNewTodo: (state, { payload }) => {
@@ -33,6 +53,7 @@ const NewTodoSlicer = createSlice({
         (item: TTask) => item.id !== payload
       );
       state.todos = state.todos.filter((item: TTask) => item.id !== payload);
+      localStorage.setItem("tasks", JSON.stringify(state.todos));
     },
     searchTodo: (state, { payload }) => {
       state.searchTodo = state.todos.filter((todo) => {
@@ -40,6 +61,18 @@ const NewTodoSlicer = createSlice({
 
         return todo.task.includes(payload);
       });
+    },
+    showTodo: (state, { payload }) => {
+      state.showMode = payload;
+    },
+    currentTodo: (state, { payload }) => {
+      state.currentTodo = payload;
+    },
+    editTodo: (state, { payload }) => {
+      state.editMode = payload;
+    },
+    openModal: (state, { payload }) => {
+      state.opened = payload;
     },
   },
 });
@@ -52,6 +85,10 @@ export const {
   failNewTodo,
   removeTodo,
   searchTodo,
+  showTodo,
+  currentTodo,
+  editTodo,
+  openModal,
 } = actions;
 
 export default reducer;

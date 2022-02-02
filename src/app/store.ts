@@ -1,9 +1,14 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+} from "@reduxjs/toolkit";
 import newTodo from "../redux/todoSlicer";
 export const store = configureStore({
   reducer: {
     todos: newTodo,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
 export type AppDispatch = typeof store.dispatch;
