@@ -16,6 +16,7 @@ function TableBodyRow({ item }: { item: TTask }) {
 
   const today = new DateObject({ calendar: "persian" });
 
+
   const handleView = () => {
     dispatch(showCurrentTodo(item));
     dispatch(openModal(true));
@@ -61,7 +62,8 @@ function TableBodyRow({ item }: { item: TTask }) {
         <Chip
           label={`${deadline.year}/${deadline.month}/${deadline.day}`}
           color={
-            deadline.dayOfBeginning >= today.dayOfBeginning
+            `'${deadline.year}/${deadline.month}/${deadline.day}'` >=
+            `'${today.year}/${today.month}/${today.day}'`
               ? "primary"
               : "secondary"
           }

@@ -1,4 +1,3 @@
-
 export type TNewTask = {
   task: string;
   priority: number;
@@ -12,7 +11,12 @@ export type TTask = {
   task: string;
   priority: number;
   status: number;
-  deadline: any;
+  deadline: {
+    day: number;
+    month: number;
+    year: number;
+    unix: number;
+  };
   message?: string;
   id: string;
 };

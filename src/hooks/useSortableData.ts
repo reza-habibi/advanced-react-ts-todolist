@@ -18,10 +18,10 @@ export const useSortableData = (items: any, config = null) => {
     } 
      if (sortConfig?.key === "deadline") {
       sortableItems.sort((a, b) => {
-        if (a['deadline'].dayOfBeginning < b['deadline'].dayOfBeginning) {
+        if (a['deadline'].unix < b['deadline'].unix) {
           return sortConfig.direction === "ascending" ? -1 : 1;
         }
-        if (a['deadline'].dayOfBeginning > b['deadline'].dayOfBeginning) {
+        if (a['deadline'].unix > b['deadline'].unix) {
           return sortConfig.direction === "ascending" ? 1 : -1;
         }
         return 0;

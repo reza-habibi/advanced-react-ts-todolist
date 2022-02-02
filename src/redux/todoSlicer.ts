@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { TTask } from "../type";
+import { DateObject } from "react-multi-date-picker";
 
 const initialState: {
   loading: boolean;
@@ -10,6 +11,7 @@ const initialState: {
   edit: boolean;
   currentTodo: TTask;
   opened: boolean;
+  filteredData: TTask[];
 } = {
   loading: false,
   todos: localStorage.getItem("tasks")
@@ -25,11 +27,12 @@ const initialState: {
     task: "",
     priority: 0,
     status: 0,
-    deadline: "",
+    deadline: { day: 0, unix: 0, year: 0, month: 0 },
     message: "",
     id: "",
   },
   opened: false,
+  filteredData: [],
 };
 
 const NewTodoSlicer = createSlice({
@@ -83,6 +86,44 @@ const NewTodoSlicer = createSlice({
       state.searchTodo[index] = payload;
       localStorage.setItem("tasks", JSON.stringify(state.todos));
     },
+    filteredTodo: (
+      state,
+      {
+        payload,
+      }: { payload: { priority: number; status: number; deadline: number } }
+    ) => {
+      const today = new DateObject({ calendar: "persian", locale: "fa" });
+      state.filteredData = state.todos
+        .filter((todo: TTask) =>
+          payload.priority ? todo.priority === payload.priority : todo
+        )
+        .filter((todo: TTask) =>
+          payload.status ? todo.status === payload.status : todo
+        )
+        .filter((todo: TTask) => {
+          if (payload.deadline) {
+            if (payload.deadline === 1) {
+              return (
+                new DateObject({ date: today.unix * 1000 }).format() >
+                new DateObject({ date: todo.deadline.unix * 1000 }).format()
+              );
+            } else if (payload.deadline === 2) {
+              return (
+                new DateObject({ date: today.unix * 1000 }).format() ===
+                new DateObject({ date: todo.deadline.unix * 1000 }).format()
+              );
+            } else if (payload.deadline === 3) {
+              return (
+                new DateObject({ date: today.unix * 1000 }).format() <
+                new DateObject({ date: todo.deadline.unix * 1000 }).format()
+              );
+            }
+          } else {
+            return todo;
+          }
+        });
+      state.searchTodo = state.filteredData;
+    },
   },
 });
 
@@ -99,6 +140,7 @@ export const {
   editMode,
   openModal,
   editTodo,
+  filteredTodo,
 } = actions;
 
 export default reducer;

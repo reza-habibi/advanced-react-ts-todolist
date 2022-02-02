@@ -81,7 +81,7 @@ const ModalForm = (props: any) => {
                 day: value.day,
                 month: value.month.number,
                 year: value.year,
-                dayOfBeginning: value.dayOfBeginning,
+                unix: value.unix,
               },
               message,
             })
@@ -96,7 +96,7 @@ const ModalForm = (props: any) => {
                 day: value.day,
                 month: value.month.number,
                 year: value.year,
-                dayOfBeginning: value.dayOfBeginning,
+                unix: value.unix,
               },
               message,
             })

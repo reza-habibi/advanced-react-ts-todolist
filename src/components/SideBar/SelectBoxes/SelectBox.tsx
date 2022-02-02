@@ -1,10 +1,12 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { Button } from "@material-ui/core";
+import { useAppDispatch } from "../../../app/hooks";
+import { filterTodos } from "../../../redux/newTodoAction";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,14 +22,25 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function SelectBox(props: any) {
   const classes = useStyles();
+  const [filters, setFilters] = useState({
+    priority: 0,
+    status: 0,
+    deadline: 0,
+  });
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    props.setFilters(props.filters);
-  }, [props, props.filters.priority, props.filters.status, props.filters.deadline]);
+    dispatch(filterTodos(filters));
+  }, [dispatch, filters]);
 
   const handleChange: any = (e: ChangeEvent<HTMLSelectElement>) => {
-    props.setFilters({ ...props.filters, [e.target.name]: e.target.value });
-  }
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  };
+
+  const handleOnReset = () => {
+    setFilters({ priority: 0, status: 0, deadline: 0 });
+  };
 
   return (
     <>
@@ -39,7 +52,7 @@ function SelectBox(props: any) {
           id="demo-simple-select-outlined"
           label="priority"
           name="priority"
-          value={props.filters.priority}
+          value={filters.priority}
         >
           <MenuItem value={0}>All</MenuItem>
           <MenuItem value={1}>Low</MenuItem>
@@ -55,7 +68,7 @@ function SelectBox(props: any) {
           id="demo-simple-select-outlined"
           label="status"
           name="status"
-          value={props.filters.status}
+          value={filters.status}
         >
           <MenuItem value={0}>All</MenuItem>
           <MenuItem value={1}>Todo</MenuItem>
@@ -71,7 +84,7 @@ function SelectBox(props: any) {
           id="demo-simple-select-outlined"
           label="deadline"
           name="deadline"
-          value={props.filters.deadline}
+          value={filters.deadline}
         >
           <MenuItem value={0}>All</MenuItem>
           <MenuItem value={1}>Overdue</MenuItem>
@@ -79,8 +92,10 @@ function SelectBox(props: any) {
           <MenuItem value={3}>For the future</MenuItem>
         </Select>
       </FormControl>
-      <Button color={"primary"} variant={"outlined"} onClick={()=>{props.setFilters({priority:0,status:0,deadline:0}
-        )}}>Reset all Filters</Button>
+
+      <Button color={"primary"} variant={"outlined"} onClick={handleOnReset}>
+        Reset
+      </Button>
     </>
   );
 }

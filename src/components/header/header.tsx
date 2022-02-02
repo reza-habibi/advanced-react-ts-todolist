@@ -10,7 +10,7 @@ import "./header.css";
 import { useAppDispatch } from "../../app/hooks";
 import { searchTodo } from "../../redux/todoSlicer";
 
-const Header = (props: any) => {
+const Header = () => {
   const dispatch = useAppDispatch();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(searchTodo(e.target.value));
@@ -44,8 +44,6 @@ const Header = (props: any) => {
           }}
         />
         <SwipeAbleTemporaryDrawer
-          setFilters={props.setFilters}
-          filters={props.filters}
         />
         <AddModal/>
       </div>
