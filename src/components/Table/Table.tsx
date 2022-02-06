@@ -110,10 +110,10 @@ export default function BasicTable(props: any) {
           })}
         </TableBody>
       </Table>
-      <div className={"w-100 d-flex justify-content-end"}>
+      <div className={"w-100 d-flex justify-content-center"}>
         <div
           className={
-            "pagination-div w-25 d-flex justify-content-around align-items-center"
+            "pagination-div d-flex justify-content-around align-items-center"
           }
         >
           <label htmlFor={"pagination-select"}>Rows per page :</label>

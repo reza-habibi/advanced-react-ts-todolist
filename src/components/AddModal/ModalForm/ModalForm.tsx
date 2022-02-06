@@ -193,7 +193,7 @@ const ModalForm = (props: any) => {
             <TextareaAutosize
               onChange={(e: any) => setMessage(e.target.value)}
               value={show || edit ? currentTodo.message : message}
-              className="w-100 my-3 p-3"
+              className="w-100 my-3 p-3 m-1"
               aria-label="Your Message"
               rowsMin={3}
               placeholder="Your Message"

@@ -18,16 +18,20 @@ const Header = () => {
 
   return (
     <header
-      className="w-100 d-flex align-items-center text-light p-2"
+      className="w-100 d-flex align-items-center justify-content-between
+      text-light p-2"
       style={{ backgroundColor: "#6200EA" }}
     >
-      <div className="w-75 d-flex align-items-center">
-        <span className={""}>
-          <MdPlaylistAddCheck className="icon"></MdPlaylistAddCheck>
-        </span>
-        <h4 className="mx-2">MY To-Do Tasks</h4>
+      <div className=" d-flex align-items-center">
+          <span>
+            <MdPlaylistAddCheck className="icon"></MdPlaylistAddCheck>
+          </span>
+        <h4 className="mx-2 truncated">
+          {""}
+          MY To-Do Tasks
+        </h4>
       </div>
-      <div className="w-25 d-flex justify-content-around align-items-center">
+      <div className=" d-flex justify-content-around align-items-center">
         <TextField
           onChange={handleChange}
           id="standard-basic"
@@ -43,9 +47,8 @@ const Header = () => {
             ),
           }}
         />
-        <SwipeAbleTemporaryDrawer
-        />
-        <AddModal/>
+        <SwipeAbleTemporaryDrawer />
+        <AddModal />
       </div>
     </header>
   );
